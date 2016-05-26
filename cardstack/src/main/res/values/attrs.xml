@@ -13,5 +13,10 @@
             <enum name="center" value="1"/>
             <enum name="bottom" value="2"/>
         </attr>
+        <attr name="drag_axis" format="enum">
+            <enum name="xAxis" value="0"/>
+            <enum name="yAxis" value="1"/>
+            <enum name="xyAxis" value="2"/>
+        </attr>
     </declare-styleable>
 </resources>
