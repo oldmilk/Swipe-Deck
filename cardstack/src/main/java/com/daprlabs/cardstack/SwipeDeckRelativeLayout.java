@@ -8,29 +8,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.daprlabs.cardstack.SwipeDeck;
+
 import java.util.ArrayList;
 
 /**
  * Created by aaron on 23/12/2015.
  */
-public class SwipeRelativeLayout extends RelativeLayout {
-    public SwipeRelativeLayout(Context context) {
+public class SwipeDeckRelativeLayout extends RelativeLayout {
+    public SwipeDeckRelativeLayout(Context context) {
         super(context);
         setClipChildren(false);
     }
 
-    public SwipeRelativeLayout(Context context, AttributeSet attrs) {
+    public SwipeDeckRelativeLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         setClipChildren(false);
     }
 
-    public SwipeRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SwipeDeckRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setClipChildren(false);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public SwipeRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public SwipeDeckRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         setClipChildren(false);
     }

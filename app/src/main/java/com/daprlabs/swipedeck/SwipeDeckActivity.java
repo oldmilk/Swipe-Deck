@@ -1,9 +1,9 @@
 package com.daprlabs.swipedeck;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,11 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.daprlabs.cardstack.SwipeActions;
+import com.daprlabs.cardstack.SwipeCardView;
 import com.daprlabs.cardstack.SwipeDeck;
+import com.daprlabs.cardstack.SwipeDeckAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -45,10 +47,11 @@ public class SwipeDeckActivity extends AppCompatActivity {
         testData.add("3");
         testData.add("4");
 
-        adapter = new SwipeDeckAdapter(testData, this);
+        adapter = new MySwipeDeckAdapter(testData, this, cardStack);
         cardStack.setAdapter(adapter);
 
         cardStack.setEventCallback(new SwipeDeck.SwipeEventCallback() {
+
             @Override
             public void cardSwipedLeft(int position) {
                 Log.i("MainActivity", "card was swiped left, position in adapter: " + position);
@@ -57,6 +60,16 @@ public class SwipeDeckActivity extends AppCompatActivity {
             @Override
             public void cardSwipedRight(int position) {
                 Log.i("MainActivity", "card was swiped right, position in adapter: " + position);
+            }
+
+            @Override
+            public void cardSwipedUp(int position) {
+
+            }
+
+            @Override
+            public void cardSwipedDown(int position) {
+
             }
 
             @Override
@@ -74,39 +87,44 @@ public class SwipeDeckActivity extends AppCompatActivity {
                 Log.i(TAG, "cardActionUp");
             }
 
-        });
-        cardStack.setLeftImage(R.id.left_image);
-        cardStack.setRightImage(R.id.right_image);
-
-        Button btn = (Button) findViewById(R.id.button);
-        btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                cardStack.swipeTopCardLeft(180);
+            public void cardResetPosition() {
 
             }
-        });
-        Button btn2 = (Button) findViewById(R.id.button2);
-        btn2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cardStack.swipeTopCardRight(180);
-            }
-        });
 
-        Button btn3 = (Button) findViewById(R.id.button3);
+            @Override
+            public void onDragProgress(float xProgress, float yProgress) {
+
+            }
+
+        });
+//        cardStack.clearLeftViewResourceIdList();
+//        cardStack.addLeftViewResourceId(R.id.left_image);
+//
+//        cardStack.clearRightViewResourceIdList();
+//        cardStack.addRightViewResourceId(R.id.right_image);
+
+//        Button btn = (Button) findViewById(R.id.button);
+//        btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                cardStack.swipeTopCardLeft(180);
+//
+//            }
+//        });
+//        Button btn2 = (Button) findViewById(R.id.button2);
+//        btn2.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                cardStack.swipeTopCardRight(180);
+//            }
+//        });
+//
+        Button btn3 = (Button) findViewById(R.id.button_add);
         btn3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 testData.add("a sample string.");
-//                ArrayList<String> newData = new ArrayList<>();
-//                newData.add("some new data");
-//                newData.add("some new data");
-//                newData.add("some new data");
-//                newData.add("some new data");
-//
-//                SwipeDeckAdapter adapter = new SwipeDeckAdapter(newData, context);
-//                cardStack.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
             }
         });
@@ -134,14 +152,79 @@ public class SwipeDeckActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public class SwipeDeckAdapter extends BaseAdapter {
+    public class MySwipeDeckAdapter extends SwipeDeckAdapter {
 
         private List<String> data;
         private Context context;
+        private SwipeDeck mSwipeDeck;
 
-        public SwipeDeckAdapter(List<String> data, Context context) {
+        public MySwipeDeckAdapter(List<String> data, Context context, SwipeDeck swipeDeck) {
             this.data = data;
             this.context = context;
+            this.mSwipeDeck = swipeDeck;
+        }
+
+        @Override
+        public View getOutLeftView(int position, View convertView, ViewGroup parent) {
+
+            View v = convertView;
+            if (v == null) {
+                LayoutInflater inflater = getLayoutInflater();
+                // normally use a viewholder
+                v = inflater.inflate(R.layout.left_view, parent, false);
+            }
+
+            return v;
+        }
+
+        @Override
+        public View getOutRightView(int position, View convertView, ViewGroup parent) {
+            View v = convertView;
+            if (v == null) {
+                LayoutInflater inflater = getLayoutInflater();
+                // normally use a viewholder
+                v = inflater.inflate(R.layout.right_view, parent, false);
+            }
+
+            return v;
+        }
+
+        @Override
+        public View getOutTopView(int position, View convertView, ViewGroup parent) {
+            return null;
+        }
+
+        @Override
+        public View getOutBottomView(int position, View convertView, ViewGroup parent) {
+            return null;
+        }
+
+        @Override
+        public SwipeActions getActions(int position) {
+
+            SwipeActions actions = new SwipeActions() {
+
+                @Override
+                public void onSwipeUp() {
+                    Log.e("SwipeActions","onSwipteUp");
+                }
+
+                @Override
+                public void onSwipeDown() {
+                    Log.e("SwipeActions","onSwipteDown");
+                }
+
+                @Override
+                public void onSwipeLeft() {
+                    Log.e("SwipeActions","onSwipteLeft");
+                }
+
+                @Override
+                public void onSwipeRight() {
+                    Log.e("SwipeActions","onSwipteRight");
+                }
+            };
+            return actions;
         }
 
         @Override
@@ -160,14 +243,15 @@ public class SwipeDeckActivity extends AppCompatActivity {
         }
 
         @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
+        public SwipeCardView getView(final int position, View convertView, ViewGroup parent) {
 
-            View v = convertView;
-            if (v == null) {
-                LayoutInflater inflater = getLayoutInflater();
-                // normally use a viewholder
-                v = inflater.inflate(R.layout.test_card2, parent, false);
-            }
+            LayoutInflater inflater = getLayoutInflater();
+            SwipeCardView v = (SwipeCardView)inflater.inflate(R.layout.test_card3, parent, false);
+//            SwipeCardView v = convertView;
+//            if (v == null) {
+//                // normally use a viewholder
+//
+//            }
             //((TextView) v.findViewById(R.id.textView2)).setText(data.get(position));
             ImageView imageView = (ImageView) v.findViewById(R.id.offer_image);
             Picasso.with(context).load(R.drawable.food).fit().centerCrop().into(imageView);
@@ -175,15 +259,38 @@ public class SwipeDeckActivity extends AppCompatActivity {
             String item = (String)getItem(position);
             textView.setText(item);
 
-            v.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.i("Layer type: ", Integer.toString(v.getLayerType()));
-                    Log.i("Hwardware Accel type:", Integer.toString(View.LAYER_TYPE_HARDWARE));
-                    Intent i = new Intent(v.getContext(), BlankActivity.class);
-                    v.getContext().startActivity(i);
-                }
-            });
+            CardView leftHoverCardView = (CardView) v.findViewById(R.id.left_hover);
+            ImageView leftArrowImageView = (ImageView) v.findViewById(R.id.left_arrow);
+            v.addLeftView(leftHoverCardView);
+            v.addLeftView(leftArrowImageView);
+
+            CardView rightHoverCardView = (CardView) v.findViewById(R.id.right_hover);
+            ImageView rightArrowImageView = (ImageView) v.findViewById(R.id.right_arrow);
+            v.addRightView(rightHoverCardView);
+            v.addRightView(rightArrowImageView);
+
+//            mSwipeDeck.clearLeftViewResourceIdList();
+//            mSwipeDeck.clearRightViewResourceIdList();
+//            mSwipeDeck.clearTopViewResourceIdList();
+//            mSwipeDeck.clearBottomViewResourceIdList();
+//
+//            mSwipeDeck.addLeftViewResourceId(R.id.left_hover);
+////            mSwipeDeck.addLeftViewResourceId(R.id.left_background);
+//            mSwipeDeck.addLeftViewResourceId(R.id.left_indicator);
+//
+//            mSwipeDeck.addRightViewResourceId(R.id.right_hover);
+////            mSwipeDeck.addRightViewResourceId(R.id.right_background);
+//            mSwipeDeck.addRightViewResourceId(R.id.right_indicator);
+
+//            v.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Log.i("Layer type: ", Integer.toString(v.getLayerType()));
+//                    Log.i("Hwardware Accel type:", Integer.toString(View.LAYER_TYPE_HARDWARE));
+//                    Intent i = new Intent(v.getContext(), BlankActivity.class);
+//                    v.getContext().startActivity(i);
+//                }
+//            });
             return v;
         }
     }

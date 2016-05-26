@@ -2,6 +2,7 @@
 <resources>
 
     <declare-styleable name="SwipeDeck">
+        <attr name="overlay_color" format="color"/>
         <attr name="max_visible" format="integer"/>
         <attr name="rotation_degrees" format="float"/>
         <attr name="card_spacing" format="dimension"/>

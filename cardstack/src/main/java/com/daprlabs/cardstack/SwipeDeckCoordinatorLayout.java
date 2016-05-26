@@ -1,12 +1,10 @@
-package com.daprlabs.cardstack.cardstack;
+package com.daprlabs.cardstack;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
+import android.support.design.widget.CoordinatorLayout;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.daprlabs.cardstack.SwipeDeck;
 
@@ -15,25 +13,19 @@ import java.util.ArrayList;
 /**
  * Created by aaron on 23/12/2015.
  */
-public class SwipeFrameLayout extends FrameLayout {
-    public SwipeFrameLayout(Context context) {
+public class SwipeDeckCoordinatorLayout extends CoordinatorLayout {
+    public SwipeDeckCoordinatorLayout(Context context) {
         super(context);
         setClipChildren(false);
     }
 
-    public SwipeFrameLayout(Context context, AttributeSet attrs) {
+    public SwipeDeckCoordinatorLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         setClipChildren(false);
     }
 
-    public SwipeFrameLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SwipeDeckCoordinatorLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setClipChildren(false);
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public SwipeFrameLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
         setClipChildren(false);
     }
 

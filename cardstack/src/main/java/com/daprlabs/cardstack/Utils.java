@@ -1,4 +1,4 @@
-package com.daprlabs.cardstack.cardstack;
+package com.daprlabs.cardstack;
 
 /**
  * Created by CarlChia on 25/5/16.

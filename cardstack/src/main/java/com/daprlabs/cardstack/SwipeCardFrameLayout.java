@@ -1,36 +1,80 @@
-package com.daprlabs.cardstack.cardstack;
+package com.daprlabs.cardstack;
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.widget.LinearLayout;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+
+import java.util.ArrayList;
 
 /**
  * Created by aaron on 23/12/2015.
  */
-public class SwipeLinearLayout extends LinearLayout {
-    public SwipeLinearLayout(Context context) {
+public class SwipeCardFrameLayout extends FrameLayout {
+
+    private View mTopOuterView;
+    private View mBottomOuterView;
+    private View mLeftOuterView;
+    private View mRightOuterView;
+
+    public void setTopOuterView(View view) {
+        mTopOuterView = view;
+    }
+
+    public void setBottomOuterView(View view) {
+        mBottomOuterView = view;
+    }
+
+    public void setLeftOuterView(View view) {
+        mLeftOuterView = view;
+    }
+
+    public void setRightOuterView(View view) {
+        mRightOuterView = view;
+    }
+
+    public View getTopOuterView() {
+        return mTopOuterView;
+    }
+
+    public View getBottomOuterView() {
+        return mBottomOuterView;
+    }
+
+    public View getLeftOuterView() {
+        return mLeftOuterView;
+    }
+
+    public View getRightOuterView() {
+        return mRightOuterView;
+    }
+
+    public SwipeCardFrameLayout(Context context) {
         super(context);
         setClipChildren(false);
     }
 
-    public SwipeLinearLayout(Context context, AttributeSet attrs) {
+    public SwipeCardFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         setClipChildren(false);
     }
 
-    public SwipeLinearLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SwipeCardFrameLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setClipChildren(false);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public SwipeLinearLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public SwipeCardFrameLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         setClipChildren(false);
     }
 
+//    //this is so that on versions of android pre lollipop it will render the cardstack above
+//    //everything else within the layout
 //    @Override
 //    protected void onFinishInflate() {
 //        super.onFinishInflate();
@@ -58,4 +102,5 @@ public class SwipeLinearLayout extends LinearLayout {
 //        invalidate();
 //        requestLayout();
 //    }
+
 }

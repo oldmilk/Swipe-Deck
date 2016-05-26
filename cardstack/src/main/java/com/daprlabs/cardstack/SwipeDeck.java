@@ -6,13 +6,11 @@ import android.content.res.TypedArray;
 import android.database.DataSetObserver;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Parcelable;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
@@ -22,7 +20,7 @@ import java.util.ArrayList;
  */
 public class SwipeDeck extends FrameLayout {
 
-    private static final String TAG = "SwipeDeck.java";
+    private static final String TAG = com.daprlabs.cardstack.SwipeDeck.class.getSimpleName();
     private static int NUMBER_OF_CARDS;
     private float ROTATION_DEGREES;
     private float CARD_SPACING;
@@ -30,6 +28,14 @@ public class SwipeDeck extends FrameLayout {
     private boolean RENDER_BELOW;
     private float OPACITY_END;
     private int CARD_GRAVITY;
+    private int DRAG_AXIS;
+    private int OVERLAY_COLOR;
+
+    public static final int DRAG_AXIS_X = 0;
+    public static final int DRAG_AXIS_Y = 1;
+    public static final int DRAG_AXIS_XY = 2;
+
+
     private int paddingLeft;
     private boolean hardwareAccelerationEnabled = true;
 
@@ -43,14 +49,23 @@ public class SwipeDeck extends FrameLayout {
     /**
      * The adapter with all the data
      */
-    private Adapter mAdapter;
+    private SwipeDeckAdapter mAdapter;
     DataSetObserver observer;
     int nextAdapterCard = 0;
     private boolean restoreInstanceState = false;
 
     private SwipeListener swipeListener;
-    private int leftImageResource;
-    private int rightImageResource;
+
+//    private List<Integer> innerLeftViewResourceIdList = new ArrayList<Integer>();
+//    private List<Integer> innerRightViewResourceIdList = new ArrayList<Integer>();
+//    private List<Integer> innerTopViewResourceIdList = new ArrayList<Integer>();
+//    private List<Integer> innerBottomViewResourceIdList = new ArrayList<Integer>();
+
+//    private List<Integer> outerLeftViewResourceIdList = new ArrayList<Integer>();
+//    private List<Integer> outerRightViewResourceIdList = new ArrayList<Integer>();
+//    private List<Integer> outerTopViewResourceIdList = new ArrayList<Integer>();
+//    private List<Integer> outerBottomViewResourceIdList = new ArrayList<Integer>();
+
     private boolean cardInteraction;
 
     public SwipeDeck(Context context, AttributeSet attrs) {
@@ -67,7 +82,9 @@ public class SwipeDeck extends FrameLayout {
             RENDER_ABOVE = a.getBoolean(R.styleable.SwipeDeck_render_above, true);
             RENDER_BELOW = a.getBoolean(R.styleable.SwipeDeck_render_below, false);
             CARD_GRAVITY = a.getInt(R.styleable.SwipeDeck_card_gravity, 0);
+            DRAG_AXIS = a.getInt(R.styleable.SwipeDeck_drag_axis, 2);
             OPACITY_END = a.getFloat(R.styleable.SwipeDeck_opacity_end, 0.33f);
+            OVERLAY_COLOR = a.getColor(R.styleable.SwipeDeck_overlay_color, 0);
         } finally {
             a.recycle();
         }
@@ -102,7 +119,7 @@ public class SwipeDeck extends FrameLayout {
         this.hardwareAccelerationEnabled = accel;
     }
 
-    public void setAdapter(Adapter adapter) {
+    public void setAdapter(SwipeDeckAdapter adapter) {
         if (this.mAdapter != null) {
             this.mAdapter.unregisterDataSetObserver(observer);
         }
@@ -114,24 +131,28 @@ public class SwipeDeck extends FrameLayout {
             @Override
             public void onChanged() {
                 super.onChanged();
+
                 //handle data set changes
                 //if we need to add any cards at this point (ie. the amount of cards on screen
                 //is less than the max number of cards to display) add the cards.
                 int childCount = getChildCount();
-                //only perform action if there are less cards on screen than NUMBER_OF_CARDS
-                if(childCount < NUMBER_OF_CARDS) {
-                    for (int i = childCount; i < NUMBER_OF_CARDS; ++i) {
+                Log.i(TAG, "onChanged - childCount:"+childCount);
+                //only perform action if there are less cards on screen than (NUMBER_OF_CARDS+1)
+                if(childCount < (NUMBER_OF_CARDS+1)) {
+                    for (int i = childCount; i < (NUMBER_OF_CARDS+1); ++i) {
                         addNextCard();
                     }
                     //position the items correctly on screen
                     for (int i = 0; i < getChildCount(); ++i) {
-                        positionItem(i);
+                        transitItem(false, i, 0.0f);
                     }
                 }
             }
 
             @Override
             public void onInvalidated() {
+                Log.i(TAG, "onInvalidated");
+
                 //reset state, remove views and request layout
                 nextAdapterCard = 0;
                 removeAllViews();
@@ -161,6 +182,7 @@ public class SwipeDeck extends FrameLayout {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
+        Log.i(TAG, "onLayout");
         // if we don't have an adapter, we don't need to do anything
         if (mAdapter == null || mAdapter.getCount() == 0) {
             nextAdapterCard = 0;
@@ -171,19 +193,30 @@ public class SwipeDeck extends FrameLayout {
         //pull in views from the adapter at the position the top of the deck is set to
         //stop when you get to for cards or the end of the adapter
         int childCount = getChildCount();
-        for (int i = childCount; i < NUMBER_OF_CARDS; ++i) {
+
+//        Log.i(TAG, "onLayout - childCount:"+childCount);
+
+
+        for (int i = childCount; i < (NUMBER_OF_CARDS+1); ++i) {
             addNextCard();
         }
         for (int i = 0; i < getChildCount(); ++i) {
-            positionItem(i);
+            transitItem(false, i, 0.0f);
         }
         //position the new children we just added and set up the top card with a listener etc
     }
 
     private void removeTopCard() {
-        //top card is now the last in view children
-        int childOffset = getChildCount() - NUMBER_OF_CARDS + 1;
-        final View child = getChildAt(getChildCount() - childOffset);
+
+        Log.i(TAG, "removeTopCard");
+
+        int childOffset = getChildCount() - (NUMBER_OF_CARDS+1) + 1;
+        int index = getChildCount() - childOffset;
+        if(getChildCount() <=  index) {
+            index = getChildCount()-1;
+        }
+        final View child = getChildAt(index);
+
         if (child != null) {
             child.setOnTouchListener(null);
             swipeListener = null;
@@ -194,27 +227,42 @@ public class SwipeDeck extends FrameLayout {
 
     private void removeViewWaitForAnimation(View child) {
         new RemoveViewOnAnimCompleted().execute(child);
-
-
     }
 
     @Override
     public void removeView(View view) {
         super.removeView(view);
+
+        Log.i(TAG, "removeView");
     }
 
     private void addNextCard() {
+        Log.i(TAG, "addNextCard");
+
+//        Log.i(TAG, "addNextCard - nextAdapterCard:"+nextAdapterCard+", mAdapter.getCount():"+mAdapter.getCount());
+
         if (nextAdapterCard < mAdapter.getCount()) {
 
             // TODO: Make view recycling work
             // TODO: Instead of removing the view from here and adding it again when it's swiped
             // ... don't remove and add to this instance: don't call removeView & addView in sequence.
-            View newBottomChild = mAdapter.getView(nextAdapterCard, null/*lastRemovedView*/, this);
+
+
+            SwipeCardView newBottomChild = mAdapter.getView(nextAdapterCard, null/*lastRemovedView*/, this);
+
+            newBottomChild.setSwipeActions(mAdapter.getActions(nextAdapterCard));
+
+            newBottomChild.setTopOuterView(mAdapter.getOutTopView(nextAdapterCard, null/*lastRemovedView*/, this));
+            newBottomChild.setBottomOuterView(mAdapter.getOutBottomView(nextAdapterCard, null/*lastRemovedView*/, this));
+            newBottomChild.setLeftOuterView(mAdapter.getOutLeftView(nextAdapterCard, null/*lastRemovedView*/, this));
+            newBottomChild.setRightOuterView(mAdapter.getOutRightView(nextAdapterCard, null/*lastRemovedView*/, this));
 
             if (hardwareAccelerationEnabled) {
                 //set backed by an off-screen buffer
                 newBottomChild.setLayerType(View.LAYER_TYPE_HARDWARE, null);
             }
+
+
 
             //set the initial Y value so card appears from under the deck
             //newBottomChild.setY(paddingTop);
@@ -223,7 +271,6 @@ public class SwipeDeck extends FrameLayout {
         }
         setupTopCard();
     }
-
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setZTranslations() {
@@ -241,7 +288,10 @@ public class SwipeDeck extends FrameLayout {
      *
      * @param child The view to add
      */
-    private void addAndMeasureChild(View child) {
+    private void addAndMeasureChild(SwipeCardView child) {
+
+//        Log.i(TAG, "addAndMeasureChild");
+
         ViewGroup.LayoutParams params = child.getLayoutParams();
         if (params == null) {
             params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
@@ -251,15 +301,15 @@ public class SwipeDeck extends FrameLayout {
         child.setY(paddingTop);
 
         //every time we add and measure a child refresh the children on screen and order them
-        ArrayList<View> children = new ArrayList<>();
+        ArrayList<SwipeCardView> children = new ArrayList<SwipeCardView>();
         children.add(child);
         for (int i = 0; i < getChildCount(); ++i) {
-            children.add(getChildAt(i));
+            children.add((SwipeCardView)getChildAt(i));
         }
 
         removeAllViews();
 
-        for (View c : children) {
+        for (SwipeCardView c : children) {
             addViewInLayout(c, -1, params, true);
             int itemWidth = getWidth() - (paddingLeft + paddingRight);
             int itemHeight = getHeight() - (paddingTop + paddingBottom);
@@ -267,37 +317,78 @@ public class SwipeDeck extends FrameLayout {
 
             //ensure that if there's a left and right image set their alpha to 0 initially
             //alpha animation is handled in the swipe listener
-            if (leftImageResource != 0) child.findViewById(leftImageResource).setAlpha(0);
-            if (rightImageResource != 0) child.findViewById(rightImageResource).setAlpha(0);
+            for(View view : c.getTopInnerViews()){
+                if(view != null){
+                    view.setAlpha(0);
+                }
+            }
+
+            for(View view : c.getBottomInnerViews()){
+                if(view != null){
+                    view.setAlpha(0);
+                }
+            }
+
+            for(View view : c.getLeftInnerViews()){
+                if(view != null){
+                    view.setAlpha(0);
+                }
+            }
+
+            for(View view : c.getRightInnerViews()){
+                if(view != null){
+                    view.setAlpha(0);
+                }
+            }
         }
         setZTranslations();
+
+
     }
 
     /**
      * Positions the children at the "correct" positions
      */
-    private void positionItem(int index) {
+
+    private void transitItem(boolean isDragging, int index, float transitValue) {
+
+        Log.i(TAG,"transitItem-index:"+index+", isDragging:"+isDragging+", transitValue:"+transitValue);
+
+        if(isDragging) {
+            //skip top
+            if(index == (getChildCount()-1)) {
+                return;
+            }
+        }
 
         View child = getChildAt(index);
 
-        int width = child.getMeasuredWidth();
-        int height = child.getMeasuredHeight();
-        int left = (getWidth() - width) / 2;
-        child.layout(left, paddingTop, left + width, paddingTop + height);
-        //layout each child slightly above the previous child (we start with the bottom)
+        float multiply = (getChildCount()-1-index) * 0.05f;
+        float fromScale = 1.00f - multiply;
+        float toScale = (index == (getChildCount()-1))? fromScale : fromScale + 0.05f;
+
+        float mappedScale = (float) Utils.mapValueFromRangeToRange(Math.abs(transitValue) , 0.0f, 1.0f, fromScale, toScale);
+        child.setScaleX(mappedScale);
+        child.setScaleY(mappedScale);
+
         int childCount = getChildCount();
         float offset = (int) (((childCount - 1) * CARD_SPACING) - (index * CARD_SPACING));
-        //child.setY(paddingTop + offset);
+        float fromOffset = offset ;
+        float toOffset = (index == (getChildCount()-1))? fromOffset : fromOffset - CARD_SPACING;
+        float mappedValueY = (float) Utils.mapValueFromRangeToRange(Math.abs(transitValue) , 0.0f, 1.0f, fromOffset, toOffset);
 
-        child.animate()
-                .setDuration(restoreInstanceState ? 0 : 160)
-        .y(paddingTop + offset);
+        child.setY(paddingTop + mappedValueY);
 
-        restoreInstanceState = false;
+        //hide the last one but appear slowly when dragging
+        if(index == 0 && (getChildCount() > NUMBER_OF_CARDS)) {
+            child.setAlpha(transitValue);
+        }
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+//        Log.i(TAG, "onMeasure");
 
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
@@ -334,39 +425,75 @@ public class SwipeDeck extends FrameLayout {
 
 
     private void setupTopCard() {
+
         //TODO: maybe find a better solution this is kind of hacky
         //if there's an extra card on screen that means the top card is still being animated
         //in that case setup the next card along
-        int childOffset = getChildCount() - NUMBER_OF_CARDS + 1;
-        final View child = getChildAt(getChildCount() - childOffset);
+        Log.i(TAG,"setupTopCard-getChildCount():"+getChildCount());
+//        Log.i(TAG,"setupTopCard-(NUMBER_OF_CARDS+1):"+(NUMBER_OF_CARDS+1));
+
+        int childOffset = getChildCount() - (NUMBER_OF_CARDS+1) + 1;
+        int index = getChildCount() - childOffset;
+        if(getChildCount() <=  index) {
+            index = getChildCount()-1;
+        }
+        final SwipeCardView child = (SwipeCardView) getChildAt(index);
+
+        Log.i(TAG,"setupTopCard-childOffset:"+childOffset+", index:"+(index));
 
         //this calculation is to get the correct position in the adapter of the current top card
         //the card position on setup top card is currently always the bottom card in the view
         //at any given time.
-        int initialX = paddingLeft;
-        int initialY = paddingTop;
 
         if (child != null) {
             //make sure we have a card
+            int initialX = paddingLeft;
+            int initialY = paddingTop;
+
             swipeListener = new SwipeListener(child, new SwipeListener.SwipeCallback() {
                 @Override
                 public void cardSwipedLeft() {
                     int positionInAdapter = nextAdapterCard - getChildCount();
-                    removeTopCard();
                     if (eventCallback != null) eventCallback.cardSwipedLeft(positionInAdapter);
-                    addNextCard();
+
+                    removeTopCard();
+                    child.getSwipeActions().onSwipeLeft();
+//                    addNextCard();
                 }
 
                 @Override
                 public void cardSwipedRight() {
                     int positionInAdapter = nextAdapterCard - getChildCount();
-                    removeTopCard();
                     if (eventCallback != null) eventCallback.cardSwipedRight(positionInAdapter);
-                    addNextCard();
+                    removeTopCard();
+                    child.getSwipeActions().onSwipeRight();
+//                    addNextCard();
+                }
+
+                @Override
+                public void cardSwipedUp() {
+                    int positionInAdapter = nextAdapterCard - getChildCount();
+                    if (eventCallback != null) eventCallback.cardSwipedUp(positionInAdapter);
+
+                    removeTopCard();
+                    child.getSwipeActions().onSwipeUp();
+//                    addNextCard();
+                }
+
+                @Override
+                public void cardSwipedDown() {
+                    int positionInAdapter = nextAdapterCard - getChildCount();
+                    if (eventCallback != null) eventCallback.cardSwipedDown(positionInAdapter);
+
+                    removeTopCard();
+                    child.getSwipeActions().onSwipeDown();
+
+//                    addNextCard();
                 }
 
                 @Override
                 public void cardOffScreen() {
+
                 }
 
                 @Override
@@ -382,19 +509,42 @@ public class SwipeDeck extends FrameLayout {
                     cardInteraction = false;
                 }
 
-            }, initialX, initialY, ROTATION_DEGREES, OPACITY_END);
+                @Override
+                public void cardResetPosition() {
+                    for (int i = 0; i < getChildCount(); ++i) {
+                        transitItem(true, i, 0.0f);
+                    }
+                }
 
+                @Override
+                public void onDragProgress(float xProgress, float yProgress) {
 
-            //if we specified these image resources, get the views and pass them to the swipe listener
-            //for the sake of animating them
-            View rightView = null;
-            View leftView = null;
-            if (!(rightImageResource == 0)) rightView = child.findViewById(rightImageResource);
-            if (!(leftImageResource == 0)) leftView = child.findViewById(leftImageResource);
-            swipeListener.setLeftView(leftView);
-            swipeListener.setRightView(rightView);
+//                    Log.i(TAG, "onDragProgress - xProgress:"+xProgress+", yProgress:"+yProgress);
+                    if(DRAG_AXIS == com.daprlabs.cardstack.SwipeDeck.DRAG_AXIS_X) {
+
+                        for (int i = 0; i < getChildCount(); ++i) {
+                            transitItem(true, i, Math.abs(xProgress));
+                        }
+
+                    }else if (DRAG_AXIS == com.daprlabs.cardstack.SwipeDeck.DRAG_AXIS_Y) {
+
+                        for (int i = 0; i < getChildCount(); ++i) {
+                            transitItem(true, i, Math.abs(yProgress));
+                        }
+
+                    }else if (DRAG_AXIS == com.daprlabs.cardstack.SwipeDeck.DRAG_AXIS_XY){
+                        for (int i = 0; i < getChildCount(); ++i) {
+                            transitItem(true, i, Math.abs(xProgress+yProgress)*0.5f);
+                        }
+                    }
+                    if(eventCallback!=null) eventCallback.onDragProgress(xProgress, yProgress);
+                }
+
+            }, initialX, initialY, ROTATION_DEGREES, OPACITY_END, DRAG_AXIS);
 
             child.setOnTouchListener(swipeListener);
+
+
         }
     }
 
@@ -405,40 +555,87 @@ public class SwipeDeck extends FrameLayout {
 
     public void swipeTopCardLeft(int duration) {
 
-        int childCount = getChildCount();
-        if (childCount > 0 && getChildCount() < (NUMBER_OF_CARDS + 1)) {
-            swipeListener.animateOffScreenLeft(duration);
+        try {
+            int childCount = getChildCount();
+            if (childCount > 0 && getChildCount() < ((NUMBER_OF_CARDS+1) + 1)) {
+                swipeListener.animateOffScreenLeft(duration);
 
-            int positionInAdapter = nextAdapterCard - getChildCount();
-            removeTopCard();
-            if (eventCallback != null) eventCallback.cardSwipedLeft(positionInAdapter);
-            addNextCard();
+                int positionInAdapter = nextAdapterCard - getChildCount();
+                if (eventCallback != null) eventCallback.cardSwipedLeft(positionInAdapter);
+
+                removeTopCard();
+//            addNextCard();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
 
     }
 
     public void swipeTopCardRight(int duration) {
-        int childCount = getChildCount();
-        if (childCount > 0 && getChildCount() < (NUMBER_OF_CARDS + 1)) {
-            swipeListener.animateOffScreenRight(duration);
 
-            int positionInAdapter = nextAdapterCard - getChildCount();
-            removeTopCard();
-            if (eventCallback != null) eventCallback.cardSwipedRight(positionInAdapter);
-            addNextCard();
+        try {
+            int childCount = getChildCount();
+            if (childCount > 0 && getChildCount() < ((NUMBER_OF_CARDS+1) + 1)) {
+                swipeListener.animateOffScreenRight(duration);
+
+                int positionInAdapter = nextAdapterCard - getChildCount();
+                if (eventCallback != null) eventCallback.cardSwipedRight(positionInAdapter);
+
+                removeTopCard();
+//            addNextCard();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
+
+    }
+
+    public void swipeTopCardTop(int duration) {
+
+        try {
+            int childCount = getChildCount();
+            if (childCount > 0 && getChildCount() < ((NUMBER_OF_CARDS+1) + 1)) {
+                swipeListener.animateOffScreenTop(duration);
+
+                int positionInAdapter = nextAdapterCard - getChildCount();
+                if (eventCallback != null) eventCallback.cardSwipedUp(positionInAdapter);
+
+                removeTopCard();
+//            addNextCard();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+
+    }
+
+    public void swipeTopCardBottom(int duration) {
+
+        try {
+            int childCount = getChildCount();
+            if (childCount > 0 && getChildCount() < ((NUMBER_OF_CARDS+1) + 1)) {
+                swipeListener.animateOffScreenBottom(duration);
+
+                int positionInAdapter = nextAdapterCard - getChildCount();
+                if (eventCallback != null) eventCallback.cardSwipedDown(positionInAdapter);
+
+                removeTopCard();
+//            addNextCard();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
     }
 
     public void setPositionCallback(CardPositionCallback callback) {
         cardPosCallback = callback;
-    }
-
-    public void setLeftImage(int imageResource) {
-        leftImageResource = imageResource;
-    }
-
-    public void setRightImage(int imageResource) {
-        rightImageResource = imageResource;
     }
 
     public interface SwipeEventCallback {
@@ -447,11 +644,19 @@ public class SwipeDeck extends FrameLayout {
 
         void cardSwipedRight(int position);
 
+        void cardSwipedUp(int position);
+
+        void cardSwipedDown(int position);
+
         void cardsDepleted();
 
         void cardActionDown();
 
         void cardActionUp();
+
+        void cardResetPosition();
+
+        void onDragProgress(float xProgress, float yProgress);
     }
 
     public interface CardPositionCallback {
@@ -472,6 +677,8 @@ public class SwipeDeck extends FrameLayout {
         protected void onPostExecute(View view) {
             super.onPostExecute(view);
             removeView(view);
+
+            addNextCard();
 
             //if there are no more children left after top card removal let the callback know
             if (getChildCount() <= 0 && eventCallback != null) {
