@@ -69,6 +69,13 @@ public class SwipeCardView extends RelativeLayout {
         return this.bottomViewList;
     }
 
+//    private int mLeftOuterViewId = 0;
+//    public void setLeftOuterViewResId(int resId) {
+//        mLeftOuterViewId = resId;
+//    }
+//    public int getLeftOuterViewResId() {
+//        return mLeftOuterViewId;
+//    }
 
     //outter view
     private View mTopOuterView;
@@ -79,21 +86,21 @@ public class SwipeCardView extends RelativeLayout {
     public void setTopOuterView(View view) {
         mTopOuterView = view;
         if(mTopOuterView != null) {
-            mTopOuterView.setVisibility(GONE);
+//            mTopOuterView.setVisibility(GONE);
         }
     }
 
     public void setBottomOuterView(View view) {
         mBottomOuterView = view;
         if(mBottomOuterView != null) {
-            mBottomOuterView.setVisibility(GONE);
+//            mBottomOuterView.setVisibility(GONE);
         }
     }
 
     public void setLeftOuterView(View view) {
         mLeftOuterView = view;
-        if(mTopOuterView != null) {
-            mTopOuterView.setVisibility(GONE);
+        if(mLeftOuterView != null) {
+//            mTopOuterView.setVisibility(GONE);
         }
 
     }
@@ -101,14 +108,14 @@ public class SwipeCardView extends RelativeLayout {
     public void setRightOuterView(View view) {
         mRightOuterView = view;
         if(mRightOuterView != null) {
-            mRightOuterView.setVisibility(GONE);
+//            mRightOuterView.setVisibility(GONE);
         }
 
     }
 
     public View getTopOuterView() {
         if(mTopOuterView != null) {
-            mTopOuterView.setVisibility(VISIBLE);
+//            mTopOuterView.setVisibility(VISIBLE);
         }
         return mTopOuterView;
 
@@ -116,21 +123,21 @@ public class SwipeCardView extends RelativeLayout {
 
     public View getBottomOuterView() {
         if(mBottomOuterView != null) {
-            mBottomOuterView.setVisibility(VISIBLE);
+//            mBottomOuterView.setVisibility(VISIBLE);
         }
         return mBottomOuterView;
     }
 
     public View getLeftOuterView() {
         if(mLeftOuterView != null) {
-            mLeftOuterView.setVisibility(VISIBLE);
+//            mLeftOuterView.setVisibility(VISIBLE);
         }
         return mLeftOuterView;
     }
 
     public View getRightOuterView() {
         if(mRightOuterView != null) {
-            mRightOuterView.setVisibility(VISIBLE);
+//            mRightOuterView.setVisibility(VISIBLE);
         }
         return mRightOuterView;
     }

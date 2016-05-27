@@ -6,7 +6,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import com.daprlabs.cardstack.SwipeDeck;
 
@@ -15,30 +15,28 @@ import java.util.ArrayList;
 /**
  * Created by aaron on 23/12/2015.
  */
-public class SwipeDeckFrameLayout extends FrameLayout {
-    public SwipeDeckFrameLayout(Context context) {
+public class SwipeDeckLayout extends RelativeLayout {
+    public SwipeDeckLayout(Context context) {
         super(context);
         setClipChildren(false);
     }
 
-    public SwipeDeckFrameLayout(Context context, AttributeSet attrs) {
+    public SwipeDeckLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         setClipChildren(false);
     }
 
-    public SwipeDeckFrameLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SwipeDeckLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setClipChildren(false);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public SwipeDeckFrameLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public SwipeDeckLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         setClipChildren(false);
     }
 
-    //this is so that on versions of android pre lollipop it will render the cardstack above
-    //everything else within the layout
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -66,5 +64,4 @@ public class SwipeDeckFrameLayout extends FrameLayout {
         invalidate();
         requestLayout();
     }
-
 }

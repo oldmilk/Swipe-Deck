@@ -5,11 +5,16 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/left_indicator"
+        android:id="@+id/leftview_indicator"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_centerVertical="true"
-        android:background="#ACFA58"/>
+        android:background="#FA5899"/>
+
+    <TextView
+        android:id="@+id/leftview_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>
 

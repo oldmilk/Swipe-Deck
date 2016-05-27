@@ -1,28 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.daprlabs.cardstack.SwipeDeckRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:swipedeck="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/swipeLayout"
+<com.daprlabs.cardstack.SwipeDeckRootLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
-
-    <com.daprlabs.cardstack.SwipeDeck
-        android:id="@+id/swipe_deck"
+    <com.daprlabs.cardstack.SwipeDeckLayout
+        xmlns:swipedeck="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/swipeLayout"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:background="#A02E2E2E"
-        swipedeck:overlay_color= "#A02E2E2E"
-        swipedeck:card_spacing="20dp"
-        swipedeck:drag_axis="xAxis"
-        swipedeck:max_visible="3"
-        swipedeck:opacity_end="0.3"
-        swipedeck:render_above="true"
-        swipedeck:rotation_degrees="5" />
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
 
 
+        <com.daprlabs.cardstack.SwipeDeck
+            android:id="@+id/swipe_deck"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:background="#A02E2E2E"
+            swipedeck:overlay_color= "#A02E2E2E"
+            swipedeck:card_spacing="20dp"
+            swipedeck:indicator_spacing="20dp"
+            swipedeck:drag_axis="xAxis"
+            swipedeck:max_visible="3"
+            swipedeck:opacity_end="0.3"
+            swipedeck:render_above="true"
+            swipedeck:rotation_degrees="5" />
 
 
+    </com.daprlabs.cardstack.SwipeDeckLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,32 +34,17 @@
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:gravity="center"-->
-            <!--android:orientation="horizontal">-->
-
-            <!--<Button-->
-                <!--android:id="@+id/button_top"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-
-                <!--android:text="swipe top" />-->
-        <!--</LinearLayout>-->
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:orientation="horizontal">
 
             <!--<Button-->
-                <!--android:id="@+id/button_left"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_weight="1"-->
-                <!--android:text="swipe left" />-->
+            <!--android:id="@+id/button_left"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:text="swipe left" />-->
 
             <Button
                 android:id="@+id/button_add"
@@ -66,32 +55,32 @@
                 android:text="add card" />
 
             <!--<Button-->
-                <!--android:id="@+id/button_right"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_weight="1"-->
+            <!--android:id="@+id/button_right"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
 
-                <!--android:text="swipe right" />-->
+            <!--android:text="swipe right" />-->
         </LinearLayout>
 
         <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:gravity="center"-->
-            <!--android:orientation="horizontal">-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:gravity="center"-->
+        <!--android:orientation="horizontal">-->
 
-            <!--<Button-->
-                <!--android:id="@+id/button_bottom"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="swipe bottom" />-->
+        <!--<Button-->
+        <!--android:id="@+id/button_bottom"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="swipe bottom" />-->
         <!--</LinearLayout>-->
 
 
     </LinearLayout>
 
+</com.daprlabs.cardstack.SwipeDeckRootLayout>
 
-</com.daprlabs.cardstack.SwipeDeckRelativeLayout>
 
 
 

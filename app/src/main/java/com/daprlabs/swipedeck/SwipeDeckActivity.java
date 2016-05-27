@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.daprlabs.cardstack.SwipeActions;
@@ -165,37 +166,32 @@ public class SwipeDeckActivity extends AppCompatActivity {
         }
 
         @Override
-        public View getOutLeftView(int position, View convertView, ViewGroup parent) {
+        public View getOutLeftView(int position) {
 
-            View v = convertView;
-            if (v == null) {
-                LayoutInflater inflater = getLayoutInflater();
-                // normally use a viewholder
-                v = inflater.inflate(R.layout.left_view, parent, false);
-            }
+            LayoutInflater inflater = getLayoutInflater();
+            View v = inflater.inflate(R.layout.left_view, null);
 
-            return v;
-        }
-
-        @Override
-        public View getOutRightView(int position, View convertView, ViewGroup parent) {
-            View v = convertView;
-            if (v == null) {
-                LayoutInflater inflater = getLayoutInflater();
-                // normally use a viewholder
-                v = inflater.inflate(R.layout.right_view, parent, false);
-            }
+            TextView textView = (TextView)v.findViewById(R.id.leftview_text);
+            textView.setText(String.valueOf(position));
 
             return v;
         }
 
         @Override
-        public View getOutTopView(int position, View convertView, ViewGroup parent) {
+        public View getOutRightView(int position) {
+
+            LayoutInflater inflater = getLayoutInflater();
+            View v = inflater.inflate(R.layout.right_view, null);
+            return v;
+        }
+
+        @Override
+        public View getOutTopView(int position) {
             return null;
         }
 
         @Override
-        public View getOutBottomView(int position, View convertView, ViewGroup parent) {
+        public View getOutBottomView(int position) {
             return null;
         }
 

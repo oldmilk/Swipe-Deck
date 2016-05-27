@@ -11,7 +11,7 @@
         android:layout_centerVertical="true"
         android:layout_alignLeft="@+id/swipe_deck"
         android:layout_marginLeft="-120dp"
-        android:background="#FE642E"/>
+        android:background="#642E"/>
 
 </RelativeLayout>
 

@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     android:background="#A02E2E2E">
 
     <!--<ImageView-->
@@ -17,6 +19,15 @@
         <!--android:layout_height="match_parent"-->
         <!--android:background="#A02E2E2E"/>-->
 
+    <!--<ImageView-->
+        <!--android:id="@+id/left_indicator"-->
+        <!--android:layout_width="100dp"-->
+        <!--android:layout_height="100dp"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_marginRight="-80dp"-->
+        <!--android:background="#ACFA58"/>-->
+
     <android.support.v7.widget.CardView
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/card_view"
@@ -27,6 +38,8 @@
         android:layout_margin="20dp"
         android:gravity="center_horizontal"
         android:padding="25dp">
+
+
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="vertical" android:layout_width="match_parent"
@@ -93,6 +106,8 @@
             card_view:cardCornerRadius="5dp"
             card_view:cardBackgroundColor="#FE642E"/>
     </android.support.v7.widget.CardView>
+
+
 
 
 
