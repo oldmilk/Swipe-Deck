@@ -3,14 +3,12 @@ package com.daprlabs.swipedeck;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -255,12 +253,12 @@ public class SwipeDeckActivity extends AppCompatActivity {
             String item = (String)getItem(position);
             textView.setText(item);
 
-            CardView leftHoverCardView = (CardView) v.findViewById(R.id.left_hover);
+            RelativeLayout leftHoverCardView = (RelativeLayout) v.findViewById(R.id.left_hover);
             ImageView leftArrowImageView = (ImageView) v.findViewById(R.id.left_arrow);
             v.addLeftView(leftHoverCardView);
             v.addLeftView(leftArrowImageView);
 
-            CardView rightHoverCardView = (CardView) v.findViewById(R.id.right_hover);
+            RelativeLayout rightHoverCardView = (RelativeLayout) v.findViewById(R.id.right_hover);
             ImageView rightArrowImageView = (ImageView) v.findViewById(R.id.right_arrow);
             v.addRightView(rightHoverCardView);
             v.addRightView(rightArrowImageView);

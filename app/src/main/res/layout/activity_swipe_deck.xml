@@ -15,13 +15,12 @@
             android:id="@+id/swipe_deck"
             android:layout_width="match_parent"
             android:layout_height="400dp"
-            android:background="#A02E2E2E"
             swipedeck:overlay_color= "#A02E2E2E"
             swipedeck:card_spacing="20dp"
             swipedeck:indicator_spacing="20dp"
             swipedeck:drag_axis="xAxis"
             swipedeck:max_visible="3"
-            swipedeck:opacity_end="0.3"
+            swipedeck:opacity_end="0.1"
             swipedeck:render_above="true"
             swipedeck:rotation_degrees="5" />
 

@@ -1,7 +1,6 @@
 package com.daprlabs.cardstack;
 
 import android.animation.Animator;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +56,7 @@ public class SwipeListener implements View.OnTouchListener {
 
     }
 
-    public SwipeListener(SwipeCardView card, final SwipeCallback callback, float initialX, float initialY, float rotation, float opacityEnd, int screenWidth,int screenHeight, int dragMode, float indicatorSpacing) {
+    public SwipeListener(SwipeCardView card, final SwipeCallback callback, float initialX, float initialY, float rotation, float opacityEnd, int screenWidth, int screenHeight, int dragMode, float indicatorSpacing) {
         this.card = card;
         this.initialX = initialX;
         this.initialY = initialY;
@@ -180,11 +179,7 @@ public class SwipeListener implements View.OnTouchListener {
                     //set alpha of left and right image
                     float alpha = (((posX - paddingLeft) / (parentWidth * OPACITY_END)));
 
-                    if(alpha >= 0) {
-                        alpha = (float) Utils.clamp(alpha, 0.0f, 1.0f);
-                    }else{
-                        alpha = (float)Utils.clamp(alpha, -1.0f, -0.0f);
-                    }
+
 
                     //float alpha = (((posX - paddingLeft) / parentWidth) * ALPHA_MAGNITUDE );
                     callback.onDragProgress(alpha, 0.0f);
@@ -240,11 +235,7 @@ public class SwipeListener implements View.OnTouchListener {
                     card.setRotation(rotation);
 
                     float alpha = (((posY - paddingTop) / (parentHeight * OPACITY_END)));
-                    if(alpha >= 0) {
-                        alpha = (float)Utils.clamp(alpha, 0.0f, 1.0f);
-                    }else{
-                        alpha = (float)Utils.clamp(alpha, -1.0f, -0.0f);
-                    }
+
 
                     //float alpha = (((posX - paddingLeft) / parentWidth) * ALPHA_MAGNITUDE );
                     //Log.i("alpha: ", Float.toString(alpha));
@@ -305,18 +296,6 @@ public class SwipeListener implements View.OnTouchListener {
 
                     float alphaX = (((posX - paddingLeft) / (parentWidth * OPACITY_END)));
                     float alphaY = (((posY - paddingTop) / (parentHeight * OPACITY_END)));
-
-                    if(alphaX >= 0) {
-                        alphaX = (float)Utils.clamp(alphaX, 0.0f, 1.0f);
-                    }else{
-                        alphaX = (float)Utils.clamp(alphaX, -1.0f, -0.0f);
-                    }
-
-                    if(alphaY >= 0) {
-                        alphaY = (float)Utils.clamp(alphaY, 0.0f, 1.0f);
-                    }else{
-                        alphaY = (float)Utils.clamp(alphaY, -1.0f, -0.0f);
-                    }
 
                     callback.onDragProgress(alphaX, alphaY);
 
@@ -693,25 +672,25 @@ public class SwipeListener implements View.OnTouchListener {
     private boolean cardBeyondLeftBorder() {
 //        Log.i(TAG, "cardBeyondLeftBorder");
         //check if cards middle is beyond the left quarter of the screen
-        return (card.getX() + (card.getWidth() / 2) < (parentWidth / 4.f));
+        return (card.getX() + (card.getWidth() / 2) < (parentWidth / 5.f));
     }
 
     private boolean cardBeyondRightBorder() {
 //        Log.i(TAG, "cardBeyondRightBorder");
         //check if card middle is beyond the right quarter of the screen
-        return (card.getX() + (card.getWidth() / 2) > ((parentWidth / 4.f) * 3));
+        return (card.getY() + (card.getHeight() / 2) > ((parentWidth / 5.f) * 4));
     }
 
     private boolean cardBeyondTopBorder() {
 //        Log.i(TAG, "cardBeyondTopBorder");
         //check if cards middle is beyond the left quarter of the screen
-        return (card.getY() + (card.getHeight() / 2) < (parentHeight / 4.f));
+        return (card.getY() + (card.getHeight() / 2) < (parentHeight / 5.f));
     }
 
     private boolean cardBeyondBottomBorder() {
 //        Log.i(TAG, "cardBeyondBottomBorder");
         //check if card middle is beyond the right quarter of the screen
-        return (card.getY() + (card.getHeight() / 2) > ((parentHeight / 4.f) * 3));
+        return (card.getY() + (card.getHeight() / 2) > ((parentHeight / 5.f) * 4));
     }
 
     private ViewPropertyAnimator resetCardPosition() {

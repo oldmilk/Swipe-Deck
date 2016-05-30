@@ -1,115 +1,105 @@
 <com.daprlabs.cardstack.SwipeCardView
+    xmlns:swipecardview="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:clipChildren="false"
-    android:clipToPadding="false"
-    android:background="#A02E2E2E">
+    android:layout_height="wrap_content">
 
-    <!--<ImageView-->
-        <!--android:id="@+id/left_background"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:background="#A02E2E2E"/>-->
-
-    <!--<ImageView-->
-        <!--android:id="@+id/right_background"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:background="#A02E2E2E"/>-->
-
-    <!--<ImageView-->
-        <!--android:id="@+id/left_indicator"-->
-        <!--android:layout_width="100dp"-->
-        <!--android:layout_height="100dp"-->
-        <!--android:layout_centerVertical="true"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_marginRight="-80dp"-->
-        <!--android:background="#ACFA58"/>-->
-
-    <android.support.v7.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <com.h6ah4i.android.materialshadowninepatch.MaterialShadowContainerView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/card_view"
         android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        card_view:cardCornerRadius="5dp"
-        android:layout_margin="20dp"
+        android:layout_margin="25dp"
         android:gravity="center_horizontal"
-        android:padding="25dp">
+        app:ms9_shadowTranslationZ="4dp"
+        app:ms9_shadowElevation="4dp">
 
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape">
 
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:orientation="vertical" android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <RelativeLayout
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/content"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <ImageView
-                    tools:src="@drawable/food"
-                    android:id="@+id/offer_image"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:scaleType="centerCrop"
-                    android:adjustViewBounds="true"
-                    android:layout_height="200dp" />
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        tools:src="@drawable/food"
+                        android:id="@+id/offer_image"
+                        android:layout_width="match_parent"
+                        android:scaleType="centerCrop"
+                        android:adjustViewBounds="true"
+                        android:layout_height="200dp" />
 
 
-            </RelativeLayout>
+                </RelativeLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
-                <ImageView
-                    android:layout_weight="1"
-                    android:id="@+id/left_arrow"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/left_arrow"
-                    android:layout_below="@id/offer_image"
-                    android:layout_centerHorizontal="true" />
-                <ImageView
-                    android:layout_weight="1"
-                    android:id="@+id/right_arrow"
-                    android:layout_width="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_weight="1"
+                        android:id="@+id/left_arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/left_arrow"
+                        android:layout_below="@id/offer_image"
+                        android:layout_centerHorizontal="true" />
+                    <ImageView
+                        android:layout_weight="1"
+                        android:id="@+id/right_arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/right_arrow"
+                        android:layout_below="@+id/offer_image"
+                        android:layout_centerHorizontal="true" />
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/sample_text"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/right_arrow"
-                    android:layout_below="@+id/offer_image"
-                    android:layout_centerHorizontal="true" />
+                    android:text="Sample Text"
+                    android:gravity="center_horizontal"
+                    android:textSize="20dp" />
+
             </LinearLayout>
-            <TextView
-                android:id="@+id/sample_text"
-                android:layout_width="match_parent"
+
+            <RelativeLayout
+                android:id="@+id/left_hover"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sample Text"
-                android:gravity="center_horizontal"
-                android:textSize="20dp" />
+                android:layout_alignTop="@+id/content"
+                android:layout_alignBottom="@+id/content"
+                android:layout_alignLeft="@+id/content"
+                android:layout_alignRight="@+id/content"
 
-        </LinearLayout>
+                android:alpha="0.7"
+                android:background="#ACFA58"/>
 
-        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/left_hover"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha="0.7"
-            card_view:cardCornerRadius="5dp"
-            card_view:cardBackgroundColor="#ACFA58"/>
+            <RelativeLayout
+                android:id="@+id/right_hover"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/content"
+                android:layout_alignBottom="@+id/content"
+                android:layout_alignLeft="@+id/content"
+                android:layout_alignRight="@+id/content"
+                android:alpha="0.7"
+                android:background="#FE642E"/>
 
-        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/right_hover"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha="0.7"
-            card_view:cardCornerRadius="5dp"
-            card_view:cardBackgroundColor="#FE642E"/>
-    </android.support.v7.widget.CardView>
+        </RelativeLayout>
 
 
 
-
+    </com.h6ah4i.android.materialshadowninepatch.MaterialShadowContainerView>
 
 </com.daprlabs.cardstack.SwipeCardView>
 

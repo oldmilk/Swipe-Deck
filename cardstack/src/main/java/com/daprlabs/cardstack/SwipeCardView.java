@@ -2,10 +2,11 @@ package com.daprlabs.cardstack;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
@@ -23,6 +24,15 @@ public class SwipeCardView extends RelativeLayout {
     public SwipeActions getSwipeActions() {
         return mSwipeActions;
     }
+
+    private ImageView mOverlayImageView;
+    public void setOverlayView(ImageView view) {
+        mOverlayImageView = view;
+    }
+    public ImageView getOverlayView() {
+        return mOverlayImageView;
+    }
+
     //inner view
     private List<View> leftViewList = new ArrayList<View>();
     private List<View> rightViewList = new ArrayList<View>();
@@ -145,22 +155,38 @@ public class SwipeCardView extends RelativeLayout {
     public SwipeCardView(Context context) {
         super(context);
         setClipChildren(false);
+
+        setBackgroundResource(0);
     }
 
     public SwipeCardView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setClipChildren(false);
+
+        setBackgroundResource(0);
+
+//        if(SHOW_SHADOW) {
+//            setBackgroundResource(R.drawable.card_background);
+//        }else{
+//            setBackgroundResource(0);
+//        }
     }
 
     public SwipeCardView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setClipChildren(false);
+
+        setBackgroundResource(0);
+
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public SwipeCardView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         setClipChildren(false);
+
+        setBackgroundResource(0);
+
     }
 
 //    //this is so that on versions of android pre lollipop it will render the cardstack above

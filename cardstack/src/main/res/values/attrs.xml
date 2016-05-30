@@ -21,4 +21,12 @@
             <enum name="xyAxis" value="2"/>
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="SwipeCardView">
+        <attr name="show_shadow" format="boolean"/>
+        <attr name="shadow_color" format="color"/>
+        <attr name="radius" format="dimension"/>
+        <attr name="background_color" format="color"/>
+
+    </declare-styleable>
 </resources>

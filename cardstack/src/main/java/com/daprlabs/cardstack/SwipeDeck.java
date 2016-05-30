@@ -10,10 +10,10 @@ import android.os.Build;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
@@ -144,7 +144,7 @@ public class SwipeDeck extends FrameLayout {
                     }
                     //position the items correctly on screen
                     for (int i = 0; i < getChildCount(); ++i) {
-                        transitItem(false, i, 0.0f);
+                        transitItem(false, i, 0.0f, 0.0f);
                     }
                 }
             }
@@ -197,7 +197,7 @@ public class SwipeDeck extends FrameLayout {
             addNextCard();
         }
         for (int i = 0; i < getChildCount(); ++i) {
-            transitItem(false, i, 0.0f);
+            transitItem(false, i, 0.0f, 0.0f);
         }
         //position the new children we just added and set up the top card with a listener etc
     }
@@ -261,6 +261,13 @@ public class SwipeDeck extends FrameLayout {
             if(mRootView == null) {
                 mRootView = ((SwipeDeckRootLayout)mSwipeDeckLayout.getParent());
             }
+
+            ImageView overlayView = new ImageView(getContext());
+            overlayView.setBackgroundColor(OVERLAY_COLOR);
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            overlayView.setAlpha(0.0f);
+            newBottomChild.addView(overlayView, lp);
+            newBottomChild.setOverlayView(overlayView);
 
             View leftView = mAdapter.getOutLeftView(nextAdapterCard);
             if(leftView != null) {
@@ -386,25 +393,25 @@ public class SwipeDeck extends FrameLayout {
                 }
             }
 
-//            View leftOuterView = c.getLeftOuterView();
-//            if(leftOuterView != null) {
-//                leftOuterView.setAlpha(0);
-//            }
-//
-//            View rightOuterView = c.getRightOuterView();
-//            if(rightOuterView != null) {
-//                rightOuterView.setAlpha(0);
-//            }
-//
-//            View topOuterView = c.getTopOuterView();
-//            if(topOuterView != null) {
-//                topOuterView.setAlpha(0);
-//            }
-//
-//            View bottomOuterView = c.getBottomOuterView();
-//            if(bottomOuterView != null) {
-//                bottomOuterView.setAlpha(0);
-//            }
+            View leftOuterView = c.getLeftOuterView();
+            if(leftOuterView != null) {
+                leftOuterView.setAlpha(0);
+            }
+
+            View rightOuterView = c.getRightOuterView();
+            if(rightOuterView != null) {
+                rightOuterView.setAlpha(0);
+            }
+
+            View topOuterView = c.getTopOuterView();
+            if(topOuterView != null) {
+                topOuterView.setAlpha(0);
+            }
+
+            View bottomOuterView = c.getBottomOuterView();
+            if(bottomOuterView != null) {
+                bottomOuterView.setAlpha(0);
+            }
         }
         setZTranslations();
 
@@ -415,33 +422,43 @@ public class SwipeDeck extends FrameLayout {
      * Positions the children at the "correct" positions
      */
 
-    private void transitItem(boolean isDragging, int index, float transitValue) {
+    private void transitItem(boolean isDragging, int index, float transitValue, float progress) {
 
         Log.i(TAG,"transitItem-index:"+index+", isDragging:"+isDragging+", transitValue:"+transitValue);
+
+        SwipeCardView child = (SwipeCardView) getChildAt(index);
 
         if(isDragging) {
             //skip top
             if(index == (getChildCount()-1)) {
-                SwipeCardView child = (SwipeCardView) getChildAt(index);
+//                SwipeCardView child = (SwipeCardView) getChildAt(index);
 
-                View leftView = child.getLeftOuterView();
-
-//                Log.i(TAG,"leftView.getX():"+leftView.getX());
-//                Log.i(TAG,"leftView.getWidth():"+leftView.getWidth());
-
-//
-//                View topOuterView = child.getTopOuterView();
-//                float centerX = child.getX() + (child.getWidth()/2);
-//                float centerY = child.getY() + (child.getHeight()/2);
-                Log.i(TAG,"transitItem-child.getX():"+child.getX()+", child.getY():"+child.getY());
-
+                ImageView overlayImage = child.getOverlayView();
+                overlayImage.setAlpha(0.0f);
                 return;
             }
+
+            //second top
+            if(index == (getChildCount()-2)) {
+                Log.i(TAG,"second top");
+
+                ImageView overlayImage = child.getOverlayView();
+                overlayImage.setAlpha(progress - 1.0f);
+            }else{
+                ImageView overlayImage = child.getOverlayView();
+                overlayImage.setAlpha(0.0f);
+            }
+
+        }else{
+//            SwipeCardView child = (SwipeCardView) getChildAt(index);
+
+            ImageView overlayImage = child.getOverlayView();
+            overlayImage.setAlpha(0.0f);
         }
 
 
 
-        View child = getChildAt(index);
+
 
         float multiply = (getChildCount()-1-index) * 0.05f;
         float fromScale = 1.00f - multiply;
@@ -552,8 +569,6 @@ public class SwipeDeck extends FrameLayout {
                 bottomView.setAlpha(0);
             }
 
-
-
             int initialX = paddingLeft;
             int initialY = paddingTop;
 
@@ -619,29 +634,42 @@ public class SwipeDeck extends FrameLayout {
                 @Override
                 public void cardResetPosition() {
                     for (int i = 0; i < getChildCount(); ++i) {
-                        transitItem(true, i, 0.0f);
+                        transitItem(false, i, 0.0f, 0.0f);
                     }
                 }
 
                 @Override
                 public void onDragProgress(float xProgress, float yProgress) {
 
-//                    Log.i(TAG, "onDragProgress - xProgress:"+xProgress+", yProgress:"+yProgress);
+                    float translateX = 0.0f;
+                    if(xProgress >= 0) {
+                        translateX = (float) Utils.clamp(xProgress, 0.0f, 1.0f);
+                    }else{
+                        translateX = (float)Utils.clamp(xProgress, -1.0f, -0.0f);
+                    }
+
+                    float translateY = 0.0f;
+                    if(yProgress >= 0) {
+                        translateY = (float) Utils.clamp(yProgress, 0.0f, 1.0f);
+                    }else{
+                        translateY = (float)Utils.clamp(yProgress, -1.0f, -0.0f);
+                    }
+
                     if(DRAG_AXIS == com.daprlabs.cardstack.SwipeDeck.DRAG_AXIS_X) {
 
                         for (int i = 0; i < getChildCount(); ++i) {
-                            transitItem(true, i, Math.abs(xProgress));
+                            transitItem(true, i, Math.abs(translateX), Math.abs(xProgress));
                         }
 
                     }else if (DRAG_AXIS == com.daprlabs.cardstack.SwipeDeck.DRAG_AXIS_Y) {
 
                         for (int i = 0; i < getChildCount(); ++i) {
-                            transitItem(true, i, Math.abs(yProgress));
+                            transitItem(true, i, Math.abs(translateY), Math.abs(yProgress));
                         }
 
                     }else if (DRAG_AXIS == com.daprlabs.cardstack.SwipeDeck.DRAG_AXIS_XY){
                         for (int i = 0; i < getChildCount(); ++i) {
-                            transitItem(true, i, Math.abs(xProgress+yProgress)*0.5f);
+                            transitItem(true, i, Math.abs(translateX+translateY)*0.5f, Math.abs(xProgress+yProgress)*0.5f);
                         }
                     }
                     if(eventCallback!=null) eventCallback.onDragProgress(xProgress, yProgress);
