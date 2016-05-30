@@ -1,4 +1,4 @@
-<com.daprlabs.cardstack.SwipeCardView
+<com.daprlabs.swipecard.SwipeCardView
     xmlns:swipecardview="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -101,6 +101,6 @@
 
     </com.h6ah4i.android.materialshadowninepatch.MaterialShadowContainerView>
 
-</com.daprlabs.cardstack.SwipeCardView>
+</com.daprlabs.swipecard.SwipeCardView>
 
 

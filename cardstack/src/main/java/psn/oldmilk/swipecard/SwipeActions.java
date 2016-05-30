@@ -1,4 +1,4 @@
-package com.daprlabs.cardstack;
+package psn.oldmilk.swipecard;
 
 /**
  * Created by CarlChia on 27/5/16.

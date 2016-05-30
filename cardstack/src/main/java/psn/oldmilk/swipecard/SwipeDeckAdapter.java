@@ -1,4 +1,4 @@
-package com.daprlabs.cardstack;
+package psn.oldmilk.swipecard;
 
 import android.view.View;
 import android.view.ViewGroup;

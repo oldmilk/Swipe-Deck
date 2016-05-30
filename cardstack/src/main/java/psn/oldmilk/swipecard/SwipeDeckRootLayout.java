@@ -1,14 +1,10 @@
-package com.daprlabs.cardstack;
+package psn.oldmilk.swipecard;
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-
-import java.util.ArrayList;
 
 /**
  * Created by aaron on 23/12/2015.

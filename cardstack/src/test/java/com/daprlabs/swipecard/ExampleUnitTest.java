@@ -1,4 +1,4 @@
-package com.daprlabs.cardstack;
+package com.daprlabs.swipecard;
 
 import org.junit.Test;
 

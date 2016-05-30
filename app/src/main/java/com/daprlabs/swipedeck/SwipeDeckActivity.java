@@ -14,14 +14,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.daprlabs.cardstack.SwipeActions;
-import com.daprlabs.cardstack.SwipeCardView;
-import com.daprlabs.cardstack.SwipeDeck;
-import com.daprlabs.cardstack.SwipeDeckAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import psn.oldmilk.swipecard.SwipeActions;
+import psn.oldmilk.swipecard.SwipeCardView;
+import psn.oldmilk.swipecard.SwipeDeck;
+import psn.oldmilk.swipecard.SwipeDeckAdapter;
 
 public class SwipeDeckActivity extends AppCompatActivity {
 

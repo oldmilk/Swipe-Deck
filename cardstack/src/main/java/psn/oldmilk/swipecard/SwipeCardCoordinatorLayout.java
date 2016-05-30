@@ -1,19 +1,14 @@
-package com.daprlabs.cardstack;
+package psn.oldmilk.swipecard;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
+import android.support.design.widget.CoordinatorLayout;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-
-import java.util.ArrayList;
 
 /**
  * Created by aaron on 23/12/2015.
  */
-public class SwipeCardFrameLayout extends FrameLayout {
+public class SwipeCardCoordinatorLayout extends CoordinatorLayout {
 
     private View mTopOuterView;
     private View mBottomOuterView;
@@ -52,24 +47,18 @@ public class SwipeCardFrameLayout extends FrameLayout {
         return mRightOuterView;
     }
 
-    public SwipeCardFrameLayout(Context context) {
+    public SwipeCardCoordinatorLayout(Context context) {
         super(context);
         setClipChildren(false);
     }
 
-    public SwipeCardFrameLayout(Context context, AttributeSet attrs) {
+    public SwipeCardCoordinatorLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         setClipChildren(false);
     }
 
-    public SwipeCardFrameLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SwipeCardCoordinatorLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setClipChildren(false);
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public SwipeCardFrameLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
         setClipChildren(false);
     }
 

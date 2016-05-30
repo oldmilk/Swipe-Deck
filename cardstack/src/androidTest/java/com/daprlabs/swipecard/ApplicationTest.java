@@ -1,4 +1,4 @@
-package com.daprlabs.cardstack;
+package com.daprlabs.swipecard;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

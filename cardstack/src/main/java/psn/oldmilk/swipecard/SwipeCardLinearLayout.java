@@ -1,4 +1,4 @@
-package com.daprlabs.cardstack;
+package psn.oldmilk.swipecard;
 
 import android.annotation.TargetApi;
 import android.content.Context;

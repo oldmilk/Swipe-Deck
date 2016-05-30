@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.daprlabs.cardstack.SwipeDeckRootLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.daprlabs.swipecard.SwipeDeckRootLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.daprlabs.cardstack.SwipeDeckLayout
+    <com.daprlabs.swipecard.SwipeDeckLayout
         xmlns:swipedeck="http://schemas.android.com/apk/res-auto"
         android:id="@+id/swipeLayout"
         android:layout_width="match_parent"
@@ -11,7 +11,7 @@
         android:layout_centerInParent="true">
 
 
-        <com.daprlabs.cardstack.SwipeDeck
+        <com.daprlabs.swipecard.SwipeDeck
             android:id="@+id/swipe_deck"
             android:layout_width="match_parent"
             android:layout_height="400dp"
@@ -25,7 +25,7 @@
             swipedeck:rotation_degrees="5" />
 
 
-    </com.daprlabs.cardstack.SwipeDeckLayout>
+    </com.daprlabs.swipecard.SwipeDeckLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -78,7 +78,7 @@
 
     </LinearLayout>
 
-</com.daprlabs.cardstack.SwipeDeckRootLayout>
+</com.daprlabs.swipecard.SwipeDeckRootLayout>
 
 
 
