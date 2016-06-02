@@ -1,0 +1,33 @@
+<psn.oldmilk.swipecard.SwipeCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.h6ah4i.android.materialshadowninepatch.MaterialShadowContainerView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/itemdynamicpulseacknowledge_shadowlayout"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="20dp"
+        android:gravity="center_horizontal"
+        app:ms9_shadowTranslationZ="5dp"
+        app:ms9_shadowElevation="5dp">
+
+        <psn.oldmilk.roundedlayout.RoundedRelativeLayout xmlns:roundedlayout="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:background="#FFFFFF"
+            roundedlayout:rounded_type="rectangle"
+            roundedlayout:rounding_radius="8dp">
+
+
+
+        </psn.oldmilk.roundedlayout.RoundedRelativeLayout>
+
+    </com.h6ah4i.android.materialshadowninepatch.MaterialShadowContainerView>
+
+
+</psn.oldmilk.swipecard.SwipeCardView>
+

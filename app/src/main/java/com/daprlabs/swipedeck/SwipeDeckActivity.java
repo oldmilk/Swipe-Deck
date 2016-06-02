@@ -98,28 +98,7 @@ public class SwipeDeckActivity extends AppCompatActivity {
             }
 
         });
-//        cardStack.clearLeftViewResourceIdList();
-//        cardStack.addLeftViewResourceId(R.id.left_image);
-//
-//        cardStack.clearRightViewResourceIdList();
-//        cardStack.addRightViewResourceId(R.id.right_image);
 
-//        Button btn = (Button) findViewById(R.id.button);
-//        btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                cardStack.swipeTopCardLeft(180);
-//
-//            }
-//        });
-//        Button btn2 = (Button) findViewById(R.id.button2);
-//        btn2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                cardStack.swipeTopCardRight(180);
-//            }
-//        });
-//
         Button btn3 = (Button) findViewById(R.id.button_add);
         btn3.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -241,51 +220,24 @@ public class SwipeDeckActivity extends AppCompatActivity {
         public SwipeCardView getView(final int position, View convertView, ViewGroup parent) {
 
             LayoutInflater inflater = getLayoutInflater();
-            SwipeCardView v = (SwipeCardView)inflater.inflate(R.layout.test_card3, parent, false);
-//            SwipeCardView v = convertView;
-//            if (v == null) {
-//                // normally use a viewholder
+            SwipeCardView v = (SwipeCardView)inflater.inflate(R.layout.item_dynamicpulse_acknowledge, parent, false);
+
+//            ImageView imageView = (ImageView) v.findViewById(R.id.offer_image);
+//            Picasso.with(context).load(R.drawable.food).fit().centerCrop().into(imageView);
+//            TextView textView = (TextView) v.findViewById(R.id.sample_text);
+//            String item = (String)getItem(position);
+//            textView.setText(item);
 //
-//            }
-            //((TextView) v.findViewById(R.id.textView2)).setText(data.get(position));
-            ImageView imageView = (ImageView) v.findViewById(R.id.offer_image);
-            Picasso.with(context).load(R.drawable.food).fit().centerCrop().into(imageView);
-            TextView textView = (TextView) v.findViewById(R.id.sample_text);
-            String item = (String)getItem(position);
-            textView.setText(item);
-
-            RelativeLayout leftHoverCardView = (RelativeLayout) v.findViewById(R.id.left_hover);
-            ImageView leftArrowImageView = (ImageView) v.findViewById(R.id.left_arrow);
-            v.addLeftView(leftHoverCardView);
-            v.addLeftView(leftArrowImageView);
-
-            RelativeLayout rightHoverCardView = (RelativeLayout) v.findViewById(R.id.right_hover);
-            ImageView rightArrowImageView = (ImageView) v.findViewById(R.id.right_arrow);
-            v.addRightView(rightHoverCardView);
-            v.addRightView(rightArrowImageView);
-
-//            mSwipeDeck.clearLeftViewResourceIdList();
-//            mSwipeDeck.clearRightViewResourceIdList();
-//            mSwipeDeck.clearTopViewResourceIdList();
-//            mSwipeDeck.clearBottomViewResourceIdList();
+//            RelativeLayout leftHoverCardView = (RelativeLayout) v.findViewById(R.id.left_hover);
+//            ImageView leftArrowImageView = (ImageView) v.findViewById(R.id.left_arrow);
+//            v.addLeftView(leftHoverCardView);
+//            v.addLeftView(leftArrowImageView);
 //
-//            mSwipeDeck.addLeftViewResourceId(R.id.left_hover);
-////            mSwipeDeck.addLeftViewResourceId(R.id.left_background);
-//            mSwipeDeck.addLeftViewResourceId(R.id.left_indicator);
-//
-//            mSwipeDeck.addRightViewResourceId(R.id.right_hover);
-////            mSwipeDeck.addRightViewResourceId(R.id.right_background);
-//            mSwipeDeck.addRightViewResourceId(R.id.right_indicator);
+//            RelativeLayout rightHoverCardView = (RelativeLayout) v.findViewById(R.id.right_hover);
+//            ImageView rightArrowImageView = (ImageView) v.findViewById(R.id.right_arrow);
+//            v.addRightView(rightHoverCardView);
+//            v.addRightView(rightArrowImageView);
 
-//            v.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Log.i("Layer type: ", Integer.toString(v.getLayerType()));
-//                    Log.i("Hwardware Accel type:", Integer.toString(View.LAYER_TYPE_HARDWARE));
-//                    Intent i = new Intent(v.getContext(), BlankActivity.class);
-//                    v.getContext().startActivity(i);
-//                }
-//            });
             return v;
         }
     }

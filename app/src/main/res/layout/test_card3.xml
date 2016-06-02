@@ -1,5 +1,4 @@
 <com.daprlabs.swipecard.SwipeCardView
-    xmlns:swipecardview="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
@@ -22,7 +21,6 @@
             android:background="@drawable/shape">
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/content"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -72,32 +70,8 @@
 
             </LinearLayout>
 
-            <RelativeLayout
-                android:id="@+id/left_hover"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/content"
-                android:layout_alignBottom="@+id/content"
-                android:layout_alignLeft="@+id/content"
-                android:layout_alignRight="@+id/content"
-
-                android:alpha="0.7"
-                android:background="#ACFA58"/>
-
-            <RelativeLayout
-                android:id="@+id/right_hover"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/content"
-                android:layout_alignBottom="@+id/content"
-                android:layout_alignLeft="@+id/content"
-                android:layout_alignRight="@+id/content"
-                android:alpha="0.7"
-                android:background="#FE642E"/>
 
         </RelativeLayout>
-
-
 
     </com.h6ah4i.android.materialshadowninepatch.MaterialShadowContainerView>
 

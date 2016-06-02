@@ -135,18 +135,8 @@ public class SwipeDeck extends FrameLayout {
                 //handle data set changes
                 //if we need to add any cards at this point (ie. the amount of cards on screen
                 //is less than the max number of cards to display) add the cards.
-                int childCount = getChildCount();
-                Log.i(TAG, "onChanged - childCount:"+childCount);
-                //only perform action if there are less cards on screen than (NUMBER_OF_CARDS+1)
-                if(childCount < (NUMBER_OF_CARDS+1)) {
-                    for (int i = childCount; i < (NUMBER_OF_CARDS+1); ++i) {
-                        addNextCard();
-                    }
-                    //position the items correctly on screen
-                    for (int i = 0; i < getChildCount(); ++i) {
-                        transitItem(false, i, 0.0f, 0.0f);
-                    }
-                }
+
+                refreshView();
             }
 
             @Override
@@ -165,6 +155,22 @@ public class SwipeDeck extends FrameLayout {
         requestLayout();
     }
 
+    private void refreshView() {
+
+        int startIndex = nextAdapterCard-getChildCount();
+        nextAdapterCard = startIndex;
+
+        removeAllViews();
+        int childCount = getChildCount();
+        for (int i = childCount; i < (NUMBER_OF_CARDS+1); ++i) {
+            addNextCard();
+        }
+        for (int i = 0; i < getChildCount(); ++i) {
+            transitItem(false, i, 0.0f, 0.0f);
+        }
+
+
+    }
 
     public void setSelection(int position){
         if(position < mAdapter.getCount()){
@@ -238,10 +244,12 @@ public class SwipeDeck extends FrameLayout {
         Log.i(TAG, "removeView");
     }
 
-    private void addNextCard() {
-        Log.i(TAG, "addNextCard");
 
-//        Log.i(TAG, "addNextCard - nextAdapterCard:"+nextAdapterCard+", mAdapter.getCount():"+mAdapter.getCount());
+
+    private void addNextCard() {
+//        Log.i(TAG, "addNextCard");
+
+        Log.i(TAG, "addNextCard - nextAdapterCard:"+nextAdapterCard+", mAdapter.getCount():"+mAdapter.getCount());
 
         if (nextAdapterCard < mAdapter.getCount()) {
 
@@ -342,7 +350,7 @@ public class SwipeDeck extends FrameLayout {
      */
     private void addAndMeasureChild(SwipeCardView child) {
 
-//        Log.i(TAG, "addAndMeasureChild");
+        Log.i(TAG, "addAndMeasureChild");
 
         ViewGroup.LayoutParams params = child.getLayoutParams();
         if (params == null) {

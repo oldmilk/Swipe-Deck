@@ -1,4 +1,4 @@
-package com.daprlabs.cardstack;
+package psn.oldmilk.swipecard;
 
 import android.animation.Animator;
 import android.view.MotionEvent;
@@ -12,7 +12,7 @@ import android.view.animation.OvershootInterpolator;
  */
 public class SwipeListener implements View.OnTouchListener {
 
-    private static final String TAG = com.daprlabs.cardstack.SwipeListener.class.getSimpleName();
+    private static final String TAG = SwipeListener.class.getSimpleName();
 
     private float ROTATION_DEGREES = 15f;
     float OPACITY_END = 0.33f;
@@ -98,11 +98,11 @@ public class SwipeListener implements View.OnTouchListener {
                     callback.cardActionDown();
                 }
 
-                if(DRAG_AXIS == com.daprlabs.cardstack.SwipeDeck.DRAG_AXIS_X) {
+                if(DRAG_AXIS == SwipeDeck.DRAG_AXIS_X) {
                     initialXPress = x;
-                }else if (DRAG_AXIS == com.daprlabs.cardstack.SwipeDeck.DRAG_AXIS_Y) {
+                }else if (DRAG_AXIS == SwipeDeck.DRAG_AXIS_Y) {
                     initialYPress = y;
-                }else if (DRAG_AXIS == com.daprlabs.cardstack.SwipeDeck.DRAG_AXIS_XY){
+                }else if (DRAG_AXIS == SwipeDeck.DRAG_AXIS_XY){
                     initialXPress = x;
                     initialYPress = y;
                 }
@@ -123,18 +123,27 @@ public class SwipeListener implements View.OnTouchListener {
                 if(rightView != null) {
                     rightView.setVisibility(View.VISIBLE);
                     rightView.setAlpha(0);
+
+                    float startOfViewX = card.getX() - rightView.getWidth();
+                    rightView.setX( startOfViewX - (INDICATOR_SPACING));
                 }
 
                 View topView = card.getTopOuterView();
                 if(topView != null) {
                     topView.setVisibility(View.VISIBLE);
                     topView.setAlpha(0);
+
+                    float endOfViewY = card.getY() + card.getHeight();
+                    topView.setY( endOfViewY + (INDICATOR_SPACING));
                 }
 
                 View bottomView = card.getBottomOuterView();
                 if(bottomView != null) {
                     bottomView.setVisibility(View.VISIBLE);
                     bottomView.setAlpha(0);
+
+                    float startOfViewY = card.getY() - rightView.getHeight();
+                    bottomView.setY( startOfViewY - (INDICATOR_SPACING));
                 }
 
                 break;
@@ -148,7 +157,7 @@ public class SwipeListener implements View.OnTouchListener {
                     break;
                 }
 
-                if(DRAG_AXIS == com.daprlabs.cardstack.SwipeDeck.DRAG_AXIS_X) {
+                if(DRAG_AXIS == SwipeDeck.DRAG_AXIS_X) {
                     final float xMove = event.getX(pointerIndex);
                     final float dx = xMove - initialXPress;
 
@@ -202,18 +211,7 @@ public class SwipeListener implements View.OnTouchListener {
                         rightOuterView.setAlpha(alpha);
                     }
 
-//                    View leftView = card.getLeftOuterView();
-//                    View rightView = card.getRightOuterView();
-//                    View topView = card.getTopOuterView();
-//                    View bottomView = card.getBottomOuterView();
-
-
-//                    if (rightView != null && leftView != null){
-//                        rightView.setAlpha(alpha);
-//                        leftView.setAlpha(-alpha);
-//                    }
-
-                }else if (DRAG_AXIS == com.daprlabs.cardstack.SwipeDeck.DRAG_AXIS_Y) {
+                }else if (DRAG_AXIS == SwipeDeck.DRAG_AXIS_Y) {
                     final float yMove = event.getY(pointerIndex);
                     final float dy = yMove - initialYPress;
 
@@ -264,7 +262,7 @@ public class SwipeListener implements View.OnTouchListener {
 //                        bottomView.setAlpha(alpha);
 //                    }
 
-                }else if (DRAG_AXIS == com.daprlabs.cardstack.SwipeDeck.DRAG_AXIS_XY){
+                }else if (DRAG_AXIS == SwipeDeck.DRAG_AXIS_XY){
                     //calculate distance moved
 
                     final float xMove = event.getX(pointerIndex);
@@ -381,7 +379,7 @@ public class SwipeListener implements View.OnTouchListener {
 
     public void checkCardForEvent() {
 
-        if(DRAG_AXIS == com.daprlabs.cardstack.SwipeDeck.DRAG_AXIS_X) {
+        if(DRAG_AXIS == SwipeDeck.DRAG_AXIS_X) {
 
             if (cardBeyondLeftBorder()) {
                 animateOffScreenLeft(160)
@@ -440,7 +438,7 @@ public class SwipeListener implements View.OnTouchListener {
                 resetCardPosition();
             }
 
-        }else if (DRAG_AXIS == com.daprlabs.cardstack.SwipeDeck.DRAG_AXIS_Y) {
+        }else if (DRAG_AXIS == SwipeDeck.DRAG_AXIS_Y) {
 
             if (cardBeyondTopBorder()) {
                 animateOffScreenTop(160)
