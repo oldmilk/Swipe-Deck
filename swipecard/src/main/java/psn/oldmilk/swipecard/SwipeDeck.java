@@ -1,6 +1,5 @@
 package psn.oldmilk.swipecard;
 
-import android.animation.Animator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -17,6 +16,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
+import java.util.List;
+
+//import android.util.Log;
+//import android.util.LogPrinter;
 
 /**
  * Created by aaron on 4/12/2015.
@@ -63,7 +66,15 @@ public class SwipeDeck extends FrameLayout {
 
     private SwipeListener swipeListener;
 
-    private boolean cardInteraction;
+    private boolean cardInteraction = false;
+    private boolean isNeedRefreshCards = false;
+//    private boolean isNeedRebuildCards = false;
+
+//    private View mTopOuterView;
+//    private View mBottomOuterView;
+//    private View mRightOuterView;
+//    private View mLeftOuterView;
+
 
     public SwipeDeck(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -132,33 +143,85 @@ public class SwipeDeck extends FrameLayout {
             public void onChanged() {
                 super.onChanged();
 
-                //handle data set changes
-                //if we need to add any cards at this point (ie. the amount of cards on screen
-                //is less than the max number of cards to display) add the cards.
+                Log.i(TAG,"DataSetObserver - onChanged");
 
-                refreshView();
+                if(!cardInteraction) {
+                    refreshView();
+                }else{
+                    isNeedRefreshCards = true;
+                }
             }
 
             @Override
             public void onInvalidated() {
-                Log.i(TAG, "onInvalidated");
+//                Log.i(TAG, "onInvalidated");
 
                 //reset state, remove views and request layout
                 nextAdapterCard = 0;
-                removeAllViews();
-                requestLayout();
+                rebuildView();
+
+//                if(!cardInteraction) {
+//                    //reset state, remove views and request layout
+//                    nextAdapterCard = 0;
+//                    rebuildView();
+//                }else{
+//                    isNeedRebuildCards = true;
+//                }
+
+
             }
         };
 
         adapter.registerDataSetObserver(observer);
-        removeAllViewsInLayout();
-        requestLayout();
+
+
+//        removeAllViewsInLayout();
+//        requestLayout();
+//
+
+        nextAdapterCard = 0;
+        rebuildView();
+
     }
 
     private void refreshView() {
 
-        int startIndex = nextAdapterCard-getChildCount();
+        Log.i(TAG,"refreshView");
+
+        int startIndex = nextAdapterCard - getChildCount();
         nextAdapterCard = startIndex;
+
+        rebuildView();
+    }
+
+    private void disableTouch(int position) {
+        final SwipeCardView child = (SwipeCardView) getChildAt(position);
+
+        if (child != null) {
+            child.setOnTouchListener(null);
+
+            if(swipeListener != null) {
+                swipeListener.resetCardPosition();
+
+                swipeListener = null;
+
+            }
+
+        }
+    }
+
+    private void rebuildView() {
+
+
+
+        for (int i = 0; i < getChildCount(); ++i) {
+            disableTouch(i);
+        }
+
+        removeAllLeftOuterView();
+        removeAllRightOuterView();
+        removeAllTopOuterView();
+        removeAllBottomOuterView();
 
         removeAllViews();
         int childCount = getChildCount();
@@ -168,13 +231,61 @@ public class SwipeDeck extends FrameLayout {
         for (int i = 0; i < getChildCount(); ++i) {
             transitItem(false, i, 0.0f, 0.0f);
         }
+    }
 
+    private List<View> mTopOuterViewList = new ArrayList<View>();
+    private void removeAllTopOuterView() {
+        for(View view :mTopOuterViewList) {
 
+            if(view != null) {
+                mRootView.removeView(view);
+            }
+        }
+        mTopOuterViewList.clear();
+    }
+
+    private List<View> mBottomOuterViewList = new ArrayList<View>();
+    private void removeAllBottomOuterView() {
+        for(View view :mBottomOuterViewList) {
+
+            if(view != null) {
+                mRootView.removeView(view);
+            }
+        }
+        mBottomOuterViewList.clear();
+    }
+
+    private List<View> mLeftOuterViewList = new ArrayList<View>();
+    private void removeAllLeftOuterView() {
+        for(View view :mLeftOuterViewList) {
+
+            if(view != null) {
+                mRootView.removeView(view);
+            }
+        }
+        mLeftOuterViewList.clear();
+    }
+
+    private List<View> mRightOuterViewList = new ArrayList<View>();
+    private void removeAllRightOuterView() {
+        for(View view :mRightOuterViewList) {
+
+            if(view != null) {
+                mRootView.removeView(view);
+            }
+        }
+        mRightOuterViewList.clear();
     }
 
     public void setSelection(int position){
         if(position < mAdapter.getCount()){
             this.nextAdapterCard = position;
+
+            removeAllLeftOuterView();
+            removeAllRightOuterView();
+            removeAllTopOuterView();
+            removeAllBottomOuterView();
+
             removeAllViews();
             requestLayout();
         }
@@ -188,10 +299,17 @@ public class SwipeDeck extends FrameLayout {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
-        Log.i(TAG, "onLayout");
+//        Log.i(TAG, "onLayout");
         // if we don't have an adapter, we don't need to do anything
         if (mAdapter == null || mAdapter.getCount() == 0) {
             nextAdapterCard = 0;
+
+
+            removeAllLeftOuterView();
+            removeAllRightOuterView();
+            removeAllTopOuterView();
+            removeAllBottomOuterView();
+
             removeAllViewsInLayout();
             return;
         }
@@ -210,7 +328,7 @@ public class SwipeDeck extends FrameLayout {
 
     private void removeTopCard() {
 
-        Log.i(TAG, "removeTopCard");
+//        Log.i(TAG, "removeTopCard");
 
         int childOffset = getChildCount() - (NUMBER_OF_CARDS+1) + 1;
         int index = getChildCount() - childOffset;
@@ -222,11 +340,6 @@ public class SwipeDeck extends FrameLayout {
         if (child != null) {
             child.setOnTouchListener(null);
             swipeListener = null;
-
-//            mRootView.removeView(child.getLeftOuterView());
-//            mRootView.removeView(child.getRightOuterView());
-//            mRootView.removeView(child.getTopOuterView());
-//            mRootView.removeView(child.getBottomOuterView());
 
             //this will also check to see if cards are depleted
             removeViewWaitForAnimation(child);
@@ -241,15 +354,13 @@ public class SwipeDeck extends FrameLayout {
     public void removeView(View view) {
         super.removeView(view);
 
-        Log.i(TAG, "removeView");
+//        Log.i(TAG, "removeView");
     }
-
 
 
     private void addNextCard() {
 //        Log.i(TAG, "addNextCard");
-
-        Log.i(TAG, "addNextCard - nextAdapterCard:"+nextAdapterCard+", mAdapter.getCount():"+mAdapter.getCount());
+//        Log.i(TAG, "addNextCard - nextAdapterCard:"+nextAdapterCard+", mAdapter.getCount():"+mAdapter.getCount());
 
         if (nextAdapterCard < mAdapter.getCount()) {
 
@@ -259,7 +370,6 @@ public class SwipeDeck extends FrameLayout {
 
 
             SwipeCardView newBottomChild = mAdapter.getView(nextAdapterCard, null/*lastRemovedView*/, this);
-
             newBottomChild.setSwipeActions(mAdapter.getActions(nextAdapterCard));
 
             if(mSwipeDeckLayout == null) {
@@ -285,6 +395,8 @@ public class SwipeDeck extends FrameLayout {
                 mRootView.addView(leftView, rlpLeft);
                 leftView.setVisibility(GONE);
                 newBottomChild.setLeftOuterView(leftView);
+
+                mLeftOuterViewList.add(leftView);
             }
 
             View rightView = mAdapter.getOutRightView(nextAdapterCard);
@@ -295,6 +407,8 @@ public class SwipeDeck extends FrameLayout {
                 mRootView.addView(rightView, rlpRight);
                 rightView.setVisibility(GONE);
                 newBottomChild.setRightOuterView(rightView);
+
+                mRightOuterViewList.add(rightView);
             }
 
             View topView = mAdapter.getOutTopView(nextAdapterCard);
@@ -305,6 +419,8 @@ public class SwipeDeck extends FrameLayout {
                 mRootView.addView(topView, rlpTop);
                 topView.setVisibility(GONE);
                 newBottomChild.setTopOuterView(topView);
+
+                mTopOuterViewList.add(topView);
             }
 
             View bottomView = mAdapter.getOutBottomView(nextAdapterCard);
@@ -315,6 +431,8 @@ public class SwipeDeck extends FrameLayout {
                 mRootView.addView(bottomView, rlpBottom);
                 bottomView.setVisibility(GONE);
                 newBottomChild.setBottomOuterView(bottomView);
+
+                mBottomOuterViewList.add(bottomView);
             }
 
             if (hardwareAccelerationEnabled) {
@@ -350,7 +468,7 @@ public class SwipeDeck extends FrameLayout {
      */
     private void addAndMeasureChild(SwipeCardView child) {
 
-        Log.i(TAG, "addAndMeasureChild");
+//        Log.i(TAG, "addAndMeasureChild");
 
         ViewGroup.LayoutParams params = child.getLayoutParams();
         if (params == null) {
@@ -432,14 +550,11 @@ public class SwipeDeck extends FrameLayout {
 
     private void transitItem(boolean isDragging, int index, float transitValue, float progress) {
 
-        Log.i(TAG,"transitItem-index:"+index+", isDragging:"+isDragging+", transitValue:"+transitValue);
-
         SwipeCardView child = (SwipeCardView) getChildAt(index);
 
         if(isDragging) {
             //skip top
             if(index == (getChildCount()-1)) {
-//                SwipeCardView child = (SwipeCardView) getChildAt(index);
 
                 ImageView overlayImage = child.getOverlayView();
                 overlayImage.setAlpha(0.0f);
@@ -448,7 +563,6 @@ public class SwipeDeck extends FrameLayout {
 
             //second top
             if(index == (getChildCount()-2)) {
-                Log.i(TAG,"second top");
 
                 ImageView overlayImage = child.getOverlayView();
                 overlayImage.setAlpha(progress - 1.0f);
@@ -458,15 +572,10 @@ public class SwipeDeck extends FrameLayout {
             }
 
         }else{
-//            SwipeCardView child = (SwipeCardView) getChildAt(index);
 
             ImageView overlayImage = child.getOverlayView();
             overlayImage.setAlpha(0.0f);
         }
-
-
-
-
 
         float multiply = (getChildCount()-1-index) * 0.05f;
         float fromScale = 1.00f - multiply;
@@ -484,7 +593,7 @@ public class SwipeDeck extends FrameLayout {
 
         child.setY(paddingTop + mappedValueY);
 
-        //hide the last one but appear slowly when dragging
+        //hide the most bottom one but appear slowly when dragging
         if(index == 0 && (getChildCount() > NUMBER_OF_CARDS)) {
             child.setAlpha(transitValue);
         }
@@ -534,7 +643,7 @@ public class SwipeDeck extends FrameLayout {
         //TODO: maybe find a better solution this is kind of hacky
         //if there's an extra card on screen that means the top card is still being animated
         //in that case setup the next card along
-        Log.i(TAG,"setupTopCard-getChildCount():"+getChildCount());
+//        Log.i(TAG,"setupTopCard-getChildCount():"+getChildCount());
 //        Log.i(TAG,"setupTopCard-(NUMBER_OF_CARDS+1):"+(NUMBER_OF_CARDS+1));
 
         int childOffset = getChildCount() - (NUMBER_OF_CARDS+1) + 1;
@@ -544,7 +653,7 @@ public class SwipeDeck extends FrameLayout {
         }
         final SwipeCardView child = (SwipeCardView) getChildAt(index);
 
-        Log.i(TAG,"setupTopCard-childOffset:"+childOffset+", index:"+(index));
+//        Log.i(TAG,"setupTopCard-childOffset:"+childOffset+", index:"+(index));
 
         //this calculation is to get the correct position in the adapter of the current top card
         //the card position on setup top card is currently always the bottom card in the view
@@ -553,28 +662,28 @@ public class SwipeDeck extends FrameLayout {
         if (child != null) {
             //make sure we have a card
 
-            View leftView = child.getLeftOuterView();
-            if(leftView != null) {
-                leftView.setVisibility(VISIBLE);
-                leftView.setAlpha(0);
+            View mLeftOuterView = child.getLeftOuterView();
+            if(mLeftOuterView != null) {
+                mLeftOuterView.setVisibility(VISIBLE);
+                mLeftOuterView.setAlpha(0);
             }
 
-            View rightView = child.getRightOuterView();
-            if(rightView != null) {
-                rightView.setVisibility(VISIBLE);
-                rightView.setAlpha(0);
+            View mRightOuterView = child.getRightOuterView();
+            if(mRightOuterView != null) {
+                mRightOuterView.setVisibility(VISIBLE);
+                mRightOuterView.setAlpha(0);
             }
 
-            View topView = child.getTopOuterView();
-            if(topView != null) {
-                topView.setVisibility(VISIBLE);
-                topView.setAlpha(0);
+            View mTopOuterView = child.getTopOuterView();
+            if(mTopOuterView != null) {
+                mTopOuterView.setVisibility(VISIBLE);
+                mTopOuterView.setAlpha(0);
             }
 
-            View bottomView = child.getBottomOuterView();
-            if(bottomView != null) {
-                bottomView.setVisibility(VISIBLE);
-                bottomView.setAlpha(0);
+            View mBottomOuterView = child.getBottomOuterView();
+            if(mBottomOuterView != null) {
+                mBottomOuterView.setVisibility(VISIBLE);
+                mBottomOuterView.setAlpha(0);
             }
 
             int initialX = paddingLeft;
@@ -588,7 +697,6 @@ public class SwipeDeck extends FrameLayout {
 
                     removeTopCard();
                     child.getSwipeActions().onSwipeLeft();
-//                    addNextCard();
                 }
 
                 @Override
@@ -597,7 +705,6 @@ public class SwipeDeck extends FrameLayout {
                     if (eventCallback != null) eventCallback.cardSwipedRight(positionInAdapter);
                     removeTopCard();
                     child.getSwipeActions().onSwipeRight();
-//                    addNextCard();
                 }
 
                 @Override
@@ -607,7 +714,6 @@ public class SwipeDeck extends FrameLayout {
 
                     removeTopCard();
                     child.getSwipeActions().onSwipeUp();
-//                    addNextCard();
                 }
 
                 @Override
@@ -617,8 +723,6 @@ public class SwipeDeck extends FrameLayout {
 
                     removeTopCard();
                     child.getSwipeActions().onSwipeDown();
-
-//                    addNextCard();
                 }
 
                 @Override
@@ -637,6 +741,19 @@ public class SwipeDeck extends FrameLayout {
 
                     if(eventCallback!=null) eventCallback.cardActionUp();
                     cardInteraction = false;
+
+                    if(isNeedRefreshCards) {
+                        isNeedRefreshCards = false;
+
+                        refreshView();
+                    }
+//
+//                    if(isNeedRebuildCards) {
+//                        isNeedRebuildCards = false;
+//
+//                        nextAdapterCard = 0;
+//                        rebuildView();
+//                    }
                 }
 
                 @Override
@@ -653,14 +770,14 @@ public class SwipeDeck extends FrameLayout {
                     if(xProgress >= 0) {
                         translateX = (float) Utils.clamp(xProgress, 0.0f, 1.0f);
                     }else{
-                        translateX = (float)Utils.clamp(xProgress, -1.0f, -0.0f);
+                        translateX = (float) Utils.clamp(xProgress, -1.0f, -0.0f);
                     }
 
                     float translateY = 0.0f;
                     if(yProgress >= 0) {
                         translateY = (float) Utils.clamp(yProgress, 0.0f, 1.0f);
                     }else{
-                        translateY = (float)Utils.clamp(yProgress, -1.0f, -0.0f);
+                        translateY = (float) Utils.clamp(yProgress, -1.0f, -0.0f);
                     }
 
                     if(DRAG_AXIS == SwipeDeck.DRAG_AXIS_X) {
@@ -686,9 +803,6 @@ public class SwipeDeck extends FrameLayout {
             }, initialX, initialY, ROTATION_DEGREES, OPACITY_END, DRAG_AXIS, INDICATOR_SPACING);
 
             child.setOnTouchListener(swipeListener);
-
-
-
 
 //            RelativeLayout.LayoutParams rlpLeft = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 //            rlpLeft.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -861,7 +975,7 @@ public class SwipeDeck extends FrameLayout {
         void yPos(Float y);
     }
 
-    private int AnimationTime = 160;
+    private int AnimationTime = 200;
     private class RemoveViewOnAnimCompleted extends AsyncTask<SwipeCardView, Void, SwipeCardView> {
 
         @Override
@@ -874,107 +988,132 @@ public class SwipeDeck extends FrameLayout {
         @Override
         protected void onPostExecute(SwipeCardView view) {
             super.onPostExecute(view);
-            removeView(view);
 
             final View leftView = view.getLeftOuterView();
             if(leftView != null) {
-                leftView.animate().setDuration(200).scaleX(1.2f).scaleY(1.2f).alpha(0.0f).setListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mRootView.removeView(leftView);
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
-                    }
-                });
+                mRootView.removeView(leftView);
+                mLeftOuterViewList.remove(leftView);
             }
 
             final View rightView = view.getRightOuterView();
             if(rightView != null) {
-                rightView.animate().setDuration(200).scaleX(1.2f).scaleY(1.2f).alpha(0.0f).setListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mRootView.removeView(rightView);
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
-                    }
-                });
+                mRootView.removeView(rightView);
+                mRightOuterViewList.remove(rightView);
             }
 
-            final View topView = view.getTopOuterView();
+             final View topView = view.getTopOuterView();
             if(topView != null) {
-                topView.animate().setDuration(200).scaleX(1.2f).scaleY(1.2f).alpha(0.0f).setListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mRootView.removeView(topView);
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
-                    }
-                });
+                mRootView.removeView(topView);
+                mTopOuterViewList.remove(topView);
             }
 
             final View bottomView = view.getLeftOuterView();
             if(bottomView != null) {
-                bottomView.animate().setDuration(200).scaleX(1.2f).scaleY(1.2f).alpha(0.0f).setListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mRootView.removeView(bottomView);
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
-                    }
-                });
+                mRootView.removeView(bottomView);
+                mBottomOuterViewList.remove(bottomView);
             }
+
+            removeView(view);
+
+//            final View leftView = view.getLeftOuterView();
+//            if(leftView != null) {
+//                leftView.animate().setDuration(200).scaleX(1.2f).scaleY(1.2f).alpha(0.0f).setListener(new Animator.AnimatorListener() {
+//                    @Override
+//                    public void onAnimationStart(Animator animation) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onAnimationEnd(Animator animation) {
+//                        mRootView.removeView(leftView);
+//                    }
+//
+//                    @Override
+//                    public void onAnimationCancel(Animator animation) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onAnimationRepeat(Animator animation) {
+//
+//                    }
+//                });
+//            }
+//
+//            final View rightView = view.getRightOuterView();
+//            if(rightView != null) {
+//                rightView.animate().setDuration(200).scaleX(1.2f).scaleY(1.2f).alpha(0.0f).setListener(new Animator.AnimatorListener() {
+//                    @Override
+//                    public void onAnimationStart(Animator animation) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onAnimationEnd(Animator animation) {
+//                        mRootView.removeView(rightView);
+//                    }
+//
+//                    @Override
+//                    public void onAnimationCancel(Animator animation) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onAnimationRepeat(Animator animation) {
+//
+//                    }
+//                });
+//            }
+//
+//            final View topView = view.getTopOuterView();
+//            if(topView != null) {
+//                topView.animate().setDuration(200).scaleX(1.2f).scaleY(1.2f).alpha(0.0f).setListener(new Animator.AnimatorListener() {
+//                    @Override
+//                    public void onAnimationStart(Animator animation) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onAnimationEnd(Animator animation) {
+//                        mRootView.removeView(topView);
+//                    }
+//
+//                    @Override
+//                    public void onAnimationCancel(Animator animation) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onAnimationRepeat(Animator animation) {
+//
+//                    }
+//                });
+//            }
+//
+//            final View bottomView = view.getLeftOuterView();
+//            if(bottomView != null) {
+//                bottomView.animate().setDuration(200).scaleX(1.2f).scaleY(1.2f).alpha(0.0f).setListener(new Animator.AnimatorListener() {
+//                    @Override
+//                    public void onAnimationStart(Animator animation) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onAnimationEnd(Animator animation) {
+//                        mRootView.removeView(bottomView);
+//                    }
+//
+//                    @Override
+//                    public void onAnimationCancel(Animator animation) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onAnimationRepeat(Animator animation) {
+//
+//                    }
+//                });
+//            }
 
 
             addNextCard();

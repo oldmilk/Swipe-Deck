@@ -115,8 +115,6 @@ public class SwipeListener implements View.OnTouchListener {
                     float endOfViewX = card.getX() + card.getWidth();
                     leftView.setX( endOfViewX + (INDICATOR_SPACING));
 
-//                    Log.i(TAG,"leftView.getWidth():"+leftView.getWidth());
-
                 }
 
                 View rightView = card.getRightOuterView();
@@ -180,6 +178,12 @@ public class SwipeListener implements View.OnTouchListener {
                         movignLeftView.setX( endOfViewX + (INDICATOR_SPACING));
                     }
 
+                    View movignRightView = card.getRightOuterView();
+                    if(movignRightView != null) {
+                        float startOfViewX = card.getX() - movignRightView.getWidth();
+                        movignRightView.setX( startOfViewX - (INDICATOR_SPACING));
+                    }
+
                     //card.setRotation
                     float distobjectX = posX - initialX;
                     float rotation = ROTATION_DEGREES * 2.f * distobjectX / parentWidth;
@@ -210,6 +214,17 @@ public class SwipeListener implements View.OnTouchListener {
                     if(rightOuterView != null) {
                         rightOuterView.setAlpha(alpha);
                     }
+
+//                    View leftView = card.getLeftOuterView();
+//                    View rightView = card.getRightOuterView();
+//                    View topView = card.getTopOuterView();
+//                    View bottomView = card.getBottomOuterView();
+
+
+//                    if (rightView != null && leftView != null){
+//                        rightView.setAlpha(alpha);
+//                        leftView.setAlpha(-alpha);
+//                    }
 
                 }else if (DRAG_AXIS == SwipeDeck.DRAG_AXIS_Y) {
                     final float yMove = event.getY(pointerIndex);
@@ -382,7 +397,7 @@ public class SwipeListener implements View.OnTouchListener {
         if(DRAG_AXIS == SwipeDeck.DRAG_AXIS_X) {
 
             if (cardBeyondLeftBorder()) {
-                animateOffScreenLeft(160)
+                animateOffScreenLeft(200)
                         .setListener(new Animator.AnimatorListener() {
 
                             @Override
@@ -408,7 +423,7 @@ public class SwipeListener implements View.OnTouchListener {
                 callback.cardSwipedLeft();
                 this.deactivated = true;
             } else if (cardBeyondRightBorder()) {
-                animateOffScreenRight(160)
+                animateOffScreenRight(200)
                         .setListener(new Animator.AnimatorListener() {
 
                             @Override
@@ -441,7 +456,7 @@ public class SwipeListener implements View.OnTouchListener {
         }else if (DRAG_AXIS == SwipeDeck.DRAG_AXIS_Y) {
 
             if (cardBeyondTopBorder()) {
-                animateOffScreenTop(160)
+                animateOffScreenTop(200)
                         .setListener(new Animator.AnimatorListener() {
 
                             @Override
@@ -467,7 +482,7 @@ public class SwipeListener implements View.OnTouchListener {
                 callback.cardSwipedUp();
                 this.deactivated = true;
             } else if (cardBeyondBottomBorder()) {
-                animateOffScreenBottom(160)
+                animateOffScreenBottom(200)
                         .setListener(new Animator.AnimatorListener() {
 
                             @Override
@@ -499,7 +514,7 @@ public class SwipeListener implements View.OnTouchListener {
 
         }else if (DRAG_AXIS == SwipeDeck.DRAG_AXIS_XY){
             if (cardBeyondLeftBorder()) {
-                animateOffScreenLeft(160)
+                animateOffScreenLeft(200)
                         .setListener(new Animator.AnimatorListener() {
 
                             @Override
@@ -525,7 +540,7 @@ public class SwipeListener implements View.OnTouchListener {
                 callback.cardSwipedLeft();
                 this.deactivated = true;
             } else if (cardBeyondRightBorder()) {
-                animateOffScreenRight(160)
+                animateOffScreenRight(200)
                         .setListener(new Animator.AnimatorListener() {
 
                             @Override
@@ -551,7 +566,7 @@ public class SwipeListener implements View.OnTouchListener {
                 callback.cardSwipedRight();
                 this.deactivated = true;
             } else if (cardBeyondTopBorder()) {
-                animateOffScreenTop(160)
+                animateOffScreenTop(200)
                         .setListener(new Animator.AnimatorListener() {
 
                             @Override
@@ -577,7 +592,7 @@ public class SwipeListener implements View.OnTouchListener {
                 callback.cardSwipedUp();
                 this.deactivated = true;
             } else if (cardBeyondBottomBorder()) {
-                animateOffScreenBottom(160).setListener(new Animator.AnimatorListener() {
+                animateOffScreenBottom(200).setListener(new Animator.AnimatorListener() {
 
                             @Override
                             public void onAnimationStart(Animator animation) {
@@ -676,7 +691,7 @@ public class SwipeListener implements View.OnTouchListener {
     private boolean cardBeyondRightBorder() {
 //        Log.i(TAG, "cardBeyondRightBorder");
         //check if card middle is beyond the right quarter of the screen
-        return (card.getY() + (card.getHeight() / 2) > ((parentWidth / 5.f) * 4));
+        return (card.getX() + (card.getWidth() / 2) > ((parentWidth / 5.f) * 4));
     }
 
     private boolean cardBeyondTopBorder() {
@@ -691,7 +706,7 @@ public class SwipeListener implements View.OnTouchListener {
         return (card.getY() + (card.getHeight() / 2) > ((parentHeight / 5.f) * 4));
     }
 
-    private ViewPropertyAnimator resetCardPosition() {
+    public ViewPropertyAnimator resetCardPosition() {
 
 //        Log.i(TAG, "resetCardPosition");
 
@@ -755,7 +770,25 @@ public class SwipeListener implements View.OnTouchListener {
     public ViewPropertyAnimator animateOffScreenLeft(int duration) {
 
 //        Log.i(TAG, "animateOffScreenLeft-duration:"+duration);
+        final View leftView = card.getLeftOuterView();
+        if(leftView != null) {
+            leftView.animate().setDuration(duration).scaleX(1.2f).scaleY(1.2f).alpha(0.0f);
+        }
 
+        final View rightView = card.getRightOuterView();
+        if(rightView != null) {
+            rightView.animate().setDuration(duration).scaleX(1.2f).scaleY(1.2f).alpha(0.0f);
+        }
+
+        final View topView = card.getTopOuterView();
+        if(topView != null) {
+            topView.animate().setDuration(duration).scaleX(1.2f).scaleY(1.2f).alpha(0.0f);
+        }
+
+        final View bottomView = card.getLeftOuterView();
+        if(bottomView != null) {
+            bottomView.animate().setDuration(duration).scaleX(1.2f).scaleY(1.2f).alpha(0.0f);
+        }
 
         return card.animate()
                 .setDuration(duration)
@@ -768,6 +801,25 @@ public class SwipeListener implements View.OnTouchListener {
     public ViewPropertyAnimator animateOffScreenRight(int duration) {
 
 //        Log.i(TAG, "animateOffScreenRight-duration:"+duration);
+        final View leftView = card.getLeftOuterView();
+        if(leftView != null) {
+            leftView.animate().setDuration(duration).scaleX(1.2f).scaleY(1.2f).alpha(0.0f);
+        }
+
+        final View rightView = card.getRightOuterView();
+        if(rightView != null) {
+            rightView.animate().setDuration(duration).scaleX(1.2f).scaleY(1.2f).alpha(0.0f);
+        }
+
+        final View topView = card.getTopOuterView();
+        if(topView != null) {
+            topView.animate().setDuration(duration).scaleX(1.2f).scaleY(1.2f).alpha(0.0f);
+        }
+
+        final View bottomView = card.getLeftOuterView();
+        if(bottomView != null) {
+            bottomView.animate().setDuration(duration).scaleX(1.2f).scaleY(1.2f).alpha(0.0f);
+        }
 
         return card.animate()
                 .setDuration(duration)
@@ -780,6 +832,25 @@ public class SwipeListener implements View.OnTouchListener {
 
 //        Log.i(TAG, "animateOffScreenTop-parentHeight:"+parentWidth);
 //        Log.i(TAG, "animateOffScreenTop-parentHeight:"+parentHeight);
+        final View leftView = card.getLeftOuterView();
+        if(leftView != null) {
+            leftView.animate().setDuration(duration).scaleX(1.2f).scaleY(1.2f).alpha(0.0f);
+        }
+
+        final View rightView = card.getRightOuterView();
+        if(rightView != null) {
+            rightView.animate().setDuration(duration).scaleX(1.2f).scaleY(1.2f).alpha(0.0f);
+        }
+
+        final View topView = card.getTopOuterView();
+        if(topView != null) {
+            topView.animate().setDuration(duration).scaleX(1.2f).scaleY(1.2f).alpha(0.0f);
+        }
+
+        final View bottomView = card.getLeftOuterView();
+        if(bottomView != null) {
+            bottomView.animate().setDuration(duration).scaleX(1.2f).scaleY(1.2f).alpha(0.0f);
+        }
 
         return card.animate()
                 .setDuration(duration)
@@ -791,6 +862,26 @@ public class SwipeListener implements View.OnTouchListener {
     public ViewPropertyAnimator animateOffScreenBottom(int duration) {
 //        Log.i(TAG, "animateOffScreenBottom-parentHeight:"+parentWidth);
 //        Log.i(TAG, "animateOffScreenBottom-parentHeight:"+parentHeight);
+
+        final View leftView = card.getLeftOuterView();
+        if(leftView != null) {
+            leftView.animate().setDuration(duration).scaleX(1.2f).scaleY(1.2f).alpha(0.0f);
+        }
+
+        final View rightView = card.getRightOuterView();
+        if(rightView != null) {
+            rightView.animate().setDuration(duration).scaleX(1.2f).scaleY(1.2f).alpha(0.0f);
+        }
+
+        final View topView = card.getTopOuterView();
+        if(topView != null) {
+            topView.animate().setDuration(duration).scaleX(1.2f).scaleY(1.2f).alpha(0.0f);
+        }
+
+        final View bottomView = card.getLeftOuterView();
+        if(bottomView != null) {
+            bottomView.animate().setDuration(duration).scaleX(1.2f).scaleY(1.2f).alpha(0.0f);
+        }
 
         return card.animate()
                 .setDuration(duration)

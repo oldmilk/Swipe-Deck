@@ -9,9 +9,6 @@ import android.widget.BaseAdapter;
  */
 public abstract class SwipeDeckAdapter extends BaseAdapter {
 
-//    public abstract int getOutLeftViewResId(int position);
-
-
     public abstract View getOutLeftView(int position);
     public abstract View getOutRightView(int position);
     public abstract View getOutTopView(int position);
