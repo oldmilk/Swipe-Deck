@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
@@ -344,6 +343,18 @@ public class SwipeDeck extends FrameLayout {
             //this will also check to see if cards are depleted
             removeViewWaitForAnimation(child);
         }
+
+        //get second top card and do fading animation
+        index--;
+        if(index >= 0) {
+            SwipeCardView secondTopChild = (SwipeCardView) getChildAt(index);
+            if(secondTopChild != null){
+                View overlayView = secondTopChild.getOverlayView();
+                if(overlayView != null) {
+                    overlayView.animate().alpha(0).setDuration(200);
+                }
+            }
+        }
     }
 
     private void removeViewWaitForAnimation(View child) {
@@ -380,12 +391,19 @@ public class SwipeDeck extends FrameLayout {
                 mRootView = ((SwipeDeckRootLayout)mSwipeDeckLayout.getParent());
             }
 
-            ImageView overlayView = new ImageView(getContext());
-            overlayView.setBackgroundColor(OVERLAY_COLOR);
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            overlayView.setAlpha(0.0f);
-            newBottomChild.addView(overlayView, lp);
-            newBottomChild.setOverlayView(overlayView);
+//            ImageView overlayView = new ImageView(getContext());
+//            overlayView.setBackgroundColor(OVERLAY_COLOR);
+//            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//            overlayView.setAlpha(0.0f);
+//            newBottomChild.addView(overlayView, lp);
+//            newBottomChild.setOverlayView(overlayView);
+
+//            View overlayView = mAdapter.getOverlayView(nextAdapterCard);
+//            if(overlayView != null) {
+//                overlayView.setVisibility(GONE);
+//                newBottomChild.setOverlayView(overlayView);
+//            }
+
 
             View leftView = mAdapter.getOutLeftView(nextAdapterCard);
             if(leftView != null) {
@@ -555,26 +573,30 @@ public class SwipeDeck extends FrameLayout {
         if(isDragging) {
             //skip top
             if(index == (getChildCount()-1)) {
-
-                ImageView overlayImage = child.getOverlayView();
-                overlayImage.setAlpha(0.0f);
+                child.setAlpha(1);
+                View overlayView = child.getOverlayView();
+                overlayView.setAlpha(0.0f);
                 return;
             }
 
-            //second top
-            if(index == (getChildCount()-2)) {
-
-                ImageView overlayImage = child.getOverlayView();
-                overlayImage.setAlpha(progress - 1.0f);
-            }else{
-                ImageView overlayImage = child.getOverlayView();
-                overlayImage.setAlpha(0.0f);
-            }
+//            //second top
+//            if(index == (getChildCount()-2)) {
+//                View overlayView = child.getOverlayView();
+//                overlayView.setAlpha(transitValue);
+//            }else{
+//                View overlayView = child.getOverlayView();
+//                overlayView.setAlpha(0.0f);
+//            }
 
         }else{
 
-            ImageView overlayImage = child.getOverlayView();
-            overlayImage.setAlpha(0.0f);
+            if(index == (getChildCount()-1)) {
+                View overlayView = child.getOverlayView();
+                overlayView.setAlpha(0.0f);
+            }else{
+                View overlayView = child.getOverlayView();
+                overlayView.setAlpha(1.0f);
+            }
         }
 
         float multiply = (getChildCount()-1-index) * 0.05f;
@@ -593,10 +615,27 @@ public class SwipeDeck extends FrameLayout {
 
         child.setY(paddingTop + mappedValueY);
 
-        //hide the most bottom one but appear slowly when dragging
-        if(index == 0 && (getChildCount() > NUMBER_OF_CARDS)) {
-            child.setAlpha(transitValue);
+        if(index == (getChildCount()-1)) {
+            child.setAlpha(1);
+            Log.i(TAG,"index:"+index+", Alpha:1");
+
+        }else{
+            float baseAlpha = 1.0f / (NUMBER_OF_CARDS);
+            float fromAlpha = index * baseAlpha;
+            float toAlpha = (index+1) * baseAlpha;
+
+            Log.i(TAG,"index:"+index+", baseAlpha:"+baseAlpha+", fromAlpha:"+fromAlpha+", toAlpha:"+toAlpha);
+
+            float mappedAlpha = (float) Utils.mapValueFromRangeToRange(Math.abs(transitValue) , 0.0f, 1.0f, fromAlpha, toAlpha);
+            child.setAlpha(mappedAlpha);
         }
+
+
+
+//        //hide the most bottom one but appear slowly when dragging
+//        if(index == 0 && (getChildCount() > NUMBER_OF_CARDS)) {
+//            child.setAlpha(transitValue);
+//        }
     }
 
     @Override
@@ -747,13 +786,7 @@ public class SwipeDeck extends FrameLayout {
 
                         refreshView();
                     }
-//
-//                    if(isNeedRebuildCards) {
-//                        isNeedRebuildCards = false;
-//
-//                        nextAdapterCard = 0;
-//                        rebuildView();
-//                    }
+
                 }
 
                 @Override

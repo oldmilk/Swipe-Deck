@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
@@ -24,12 +23,12 @@ public class SwipeCardView extends RelativeLayout {
         return mSwipeActions;
     }
 
-    private ImageView mOverlayImageView;
-    public void setOverlayView(ImageView view) {
-        mOverlayImageView = view;
+    private View mOverlayView;
+    public void setOverlayView(View view) {
+        mOverlayView = view;
     }
-    public ImageView getOverlayView() {
-        return mOverlayImageView;
+    public View getOverlayView() {
+        return mOverlayView;
     }
 
     //inner view
@@ -94,60 +93,34 @@ public class SwipeCardView extends RelativeLayout {
 
     public void setTopOuterView(View view) {
         mTopOuterView = view;
-        if(mTopOuterView != null) {
-//            mTopOuterView.setVisibility(GONE);
-        }
     }
 
     public void setBottomOuterView(View view) {
         mBottomOuterView = view;
-        if(mBottomOuterView != null) {
-//            mBottomOuterView.setVisibility(GONE);
-        }
     }
 
     public void setLeftOuterView(View view) {
         mLeftOuterView = view;
-        if(mLeftOuterView != null) {
-//            mTopOuterView.setVisibility(GONE);
-        }
-
     }
 
     public void setRightOuterView(View view) {
         mRightOuterView = view;
-        if(mRightOuterView != null) {
-//            mRightOuterView.setVisibility(GONE);
-        }
-
     }
 
     public View getTopOuterView() {
-        if(mTopOuterView != null) {
-//            mTopOuterView.setVisibility(VISIBLE);
-        }
         return mTopOuterView;
 
     }
 
     public View getBottomOuterView() {
-        if(mBottomOuterView != null) {
-//            mBottomOuterView.setVisibility(VISIBLE);
-        }
         return mBottomOuterView;
     }
 
     public View getLeftOuterView() {
-        if(mLeftOuterView != null) {
-//            mLeftOuterView.setVisibility(VISIBLE);
-        }
         return mLeftOuterView;
     }
 
     public View getRightOuterView() {
-        if(mRightOuterView != null) {
-//            mRightOuterView.setVisibility(VISIBLE);
-        }
         return mRightOuterView;
     }
 
@@ -164,11 +137,6 @@ public class SwipeCardView extends RelativeLayout {
 
         setBackgroundResource(0);
 
-//        if(SHOW_SHADOW) {
-//            setBackgroundResource(R.drawable.card_background);
-//        }else{
-//            setBackgroundResource(0);
-//        }
     }
 
     public SwipeCardView(Context context, AttributeSet attrs, int defStyleAttr) {

@@ -192,8 +192,6 @@ public class SwipeListener implements View.OnTouchListener {
                     //set alpha of left and right image
                     float alpha = (((posX - paddingLeft) / (parentWidth * OPACITY_END)));
 
-
-
                     //float alpha = (((posX - paddingLeft) / parentWidth) * ALPHA_MAGNITUDE );
                     callback.onDragProgress(alpha, 0.0f);
 
@@ -205,14 +203,31 @@ public class SwipeListener implements View.OnTouchListener {
                         view.setAlpha(alpha);
                     }
 
+                    float scale = 0.0f;
+                    float mappedValue = 0.0f;
+                    if(alpha >= 0) {
+                        scale = (float) Utils.clamp(alpha, 0.0f, 1.0f);
+                        mappedValue = (float) Utils.mapValueFromRangeToRange(scale, 0.0f, 1.0f, 0.3f, 1.0f);
+                    }else{
+                        scale = (float) Utils.clamp(alpha, -1.0f, -0.0f);
+                        mappedValue = (float) Utils.mapValueFromRangeToRange(scale, -1.0f, -0.0f, 1.0f, 0.3f);
+                    }
+
                     View leftOuterView = card.getLeftOuterView();
                     if(leftOuterView != null) {
                         leftOuterView.setAlpha(-alpha);
+
+                        leftOuterView.setScaleX(mappedValue);
+                        leftOuterView.setScaleY(mappedValue);
+
                     }
 
                     View rightOuterView = card.getRightOuterView();
                     if(rightOuterView != null) {
                         rightOuterView.setAlpha(alpha);
+
+                        rightOuterView.setScaleX(mappedValue);
+                        rightOuterView.setScaleY(mappedValue);
                     }
 
 //                    View leftView = card.getLeftOuterView();
@@ -262,14 +277,42 @@ public class SwipeListener implements View.OnTouchListener {
                         view.setAlpha(alpha);
                     }
 
+//                    View topOuterView = card.getTopOuterView();
+//                    if(topOuterView != null) {
+//                        topOuterView.setAlpha(-alpha);
+//                    }
+//
+//                    View bottomOuterView = card.getBottomOuterView();
+//                    if(bottomOuterView != null) {
+//                        bottomOuterView.setAlpha(alpha);
+//                    }
+
+                    float scale = 0.0f;
+                    float mappedValue = 0.0f;
+                    if(alpha >= 0) {
+                        scale = (float) Utils.clamp(alpha, 0.0f, 1.0f);
+                        mappedValue = (float) Utils.mapValueFromRangeToRange(scale, 0.0f, 1.0f, 0.3f, 1.0f);
+
+                    }else{
+                        scale = (float) Utils.clamp(alpha, -1.0f, -0.0f);
+                        mappedValue = (float) Utils.mapValueFromRangeToRange(scale, -1.0f, -0.0f, 0.3f, 1.0f);
+                    }
+
                     View topOuterView = card.getTopOuterView();
                     if(topOuterView != null) {
                         topOuterView.setAlpha(-alpha);
+
+                        topOuterView.setScaleX(mappedValue);
+                        topOuterView.setScaleY(mappedValue);
+
                     }
 
                     View bottomOuterView = card.getBottomOuterView();
                     if(bottomOuterView != null) {
                         bottomOuterView.setAlpha(alpha);
+
+                        bottomOuterView.setScaleX(mappedValue);
+                        bottomOuterView.setScaleY(mappedValue);
                     }
 
 //                    if (topView != null && bottomView != null){
@@ -328,43 +371,73 @@ public class SwipeListener implements View.OnTouchListener {
                         view.setAlpha(alphaY);
                     }
 
+
+//                    View leftOuterView = card.getLeftOuterView();
+//                    if(leftOuterView != null) {
+//                        leftOuterView.setAlpha(-alphaX);
+//                    }
+//
+//                    View rightOuterView = card.getRightOuterView();
+//                    if(rightOuterView != null) {
+//                        rightOuterView.setAlpha(alphaX);
+//                    }
+
+                    float scaleX = 0.0f;
+                    float mappedValueX = 0.0f;
+                    if(alphaX >= 0) {
+                        scaleX = (float) Utils.clamp(alphaX, 0.0f, 1.0f);
+                        mappedValueX = (float) Utils.mapValueFromRangeToRange(scaleX, 0.0f, 1.0f, 0.3f, 1.0f);
+
+                    }else{
+                        scaleX = (float) Utils.clamp(alphaX, -1.0f, -0.0f);
+                        mappedValueX = (float) Utils.mapValueFromRangeToRange(scaleX, -1.0f, -0.0f, 0.3f, 1.0f);
+                    }
+
                     View leftOuterView = card.getLeftOuterView();
                     if(leftOuterView != null) {
                         leftOuterView.setAlpha(-alphaX);
+
+                        leftOuterView.setScaleX(mappedValueX);
+                        leftOuterView.setScaleY(mappedValueX);
+
                     }
 
                     View rightOuterView = card.getRightOuterView();
                     if(rightOuterView != null) {
                         rightOuterView.setAlpha(alphaX);
+
+                        rightOuterView.setScaleX(mappedValueX);
+                        rightOuterView.setScaleY(mappedValueX);
+                    }
+
+
+                    float scaleY = 0.0f;
+                    float mappedValueY = 0.0f;
+                    if(alphaY >= 0) {
+                        scaleY = (float) Utils.clamp(alphaY, 0.0f, 1.0f);
+                        mappedValueY = (float) Utils.mapValueFromRangeToRange(scaleY, 0.0f, 1.0f, 0.3f, 1.0f);
+
+                    }else{
+                        scaleY = (float) Utils.clamp(alphaY, -1.0f, -0.0f);
+                        mappedValueY = (float) Utils.mapValueFromRangeToRange(scaleY, -1.0f, -0.0f, 0.3f, 1.0f);
                     }
 
                     View topOuterView = card.getTopOuterView();
                     if(topOuterView != null) {
                         topOuterView.setAlpha(-alphaY);
+
+                        topOuterView.setScaleX(mappedValueY);
+                        topOuterView.setScaleY(mappedValueY);
                     }
 
                     View bottomOuterView = card.getBottomOuterView();
                     if(bottomOuterView != null) {
                         bottomOuterView.setAlpha(alphaY);
+
+                        bottomOuterView.setScaleX(mappedValueY);
+                        bottomOuterView.setScaleY(mappedValueY);
                     }
-//                    if (rightView != null && leftView != null){
-//                        //set alpha of left and right image
-//
-//                        //float alpha = (((posX - paddingLeft) / parentWidth) * ALPHA_MAGNITUDE );
-//                        //Log.i("alpha: ", Float.toString(alpha));
-//                        leftView.setAlpha(-alphaX);
-//                        rightView.setAlpha(alphaX);
-//
-//                    }
-//
-//                    if (topView != null && bottomView != null){
-//                        //set alpha of left and right image
-//
-//                        //float alpha = (((posX - paddingLeft) / parentWidth) * ALPHA_MAGNITUDE );
-//                        //Log.i("alpha: ", Float.toString(alpha));
-//                        bottomView.setAlpha(alphaY);
-//                        topView.setAlpha(-alphaY);
-//                    }
+
                 }
 
                 break;
